@@ -8,11 +8,11 @@ import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   static List<MenuItem> mainMenu = [
-    MenuItem(tr("payment"), Icons.payment, 0),
-    MenuItem(tr("promos"), Icons.card_giftcard, 1),
-    MenuItem(tr("notifications"), Icons.notifications, 2),
-    MenuItem(tr("help"), Icons.help, 3),
-    MenuItem(tr("about_us"), Icons.info_outline, 4),
+    MenuItem(tr("Home"), Icons.home, 0),
+    MenuItem(tr("Profile"), Icons.person, 1),
+    MenuItem(tr("Hospitals"), Icons.local_hospital, 2),
+    MenuItem(tr("Help"), Icons.help, 3),
+    MenuItem(tr("About Us"), Icons.info_outline, 4),
   ];
 
   @override

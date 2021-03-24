@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/page/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -30,6 +31,9 @@ class _MenuScreenState extends State<MenuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    String name = user.displayName;
+    String email = user.email;
     final TextStyle androidStyle = const TextStyle(
         fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white);
     final TextStyle iosStyle = const TextStyle(color: Colors.white);
@@ -64,6 +68,10 @@ class _MenuScreenState extends State<MenuScreen> {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image:  NetworkImage(user.photoURL),
+                      fit: BoxFit.fill,
+                    ),
                     color: Colors.grey[300],
                     shape: BoxShape.circle,
                   ),
@@ -71,11 +79,23 @@ class _MenuScreenState extends State<MenuScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                    bottom: 36.0, left: 24.0, right: 24.0),
+                    bottom: 13.0, left: 24.0, right: 24.0),
                 child: Text(
-                  tr("name"),
+                  tr("$name"),
                   style: TextStyle(
                     fontSize: 22,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    bottom: 24.0, left: 24.0, right: 24.0),
+                child: Text(
+                  tr("$email"),
+                  style: TextStyle(
+                    fontSize: 11,
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
                   ),

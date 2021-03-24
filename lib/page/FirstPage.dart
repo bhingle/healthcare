@@ -9,7 +9,7 @@ import 'package:my_app/widget/sign_up_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:my_app/page/NavPage.dart';
 
-class HomePage extends StatelessWidget {
+class FirstPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: ChangeNotifierProvider(

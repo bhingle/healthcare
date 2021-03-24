@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/page/home_page.dart';
+import 'package:my_app/page/FirstPage.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:my_app/page/HospitalInfoView.dart';
 import 'package:my_app/page/HospitalInfo.dart';
-import 'package:my_app/page/Home.dart';
 
 
 // import 'package:firebase_auth_web/firebase_auth_web.dart';
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         title: title,
         theme: ThemeData(primarySwatch: Colors.deepOrange),
         // home: HomePage(),
-        home:HomePage(),
+        home:FirstPage(),
       
       );
 }

@@ -7,7 +7,7 @@ class LoggedInWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-
+    
     return Container(
       alignment: Alignment.center,
       color: Colors.blueGrey.shade900,
