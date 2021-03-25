@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math' show pi;
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my_app/page/HospitalInfo.dart';
 import 'package:my_app/page/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -31,16 +32,19 @@ class PageStructure extends StatelessWidget {
     final angle = ZoomDrawer.isRTL() ? 180 * pi / 180 : 0.0;
     final _currentPage =
         context.select<MenuProvider, int>((provider) => provider.currentPage);
-    final container = Container(
-      color: Colors.grey[300],
-      child: Center(
-        child: Text(
-            "${tr("current")}: ${HomeScreen.mainMenu[_currentPage].title}"),
-      ),
-    );
-    final color = Theme
-        .of(context)
-        .accentColor;
+    var container;
+    if (_currentPage == 2) {
+      container = HospitalInfo();
+    } else {
+      container = Container(
+        color: Colors.grey[300],
+        child: Center(
+          child: Text(
+              "${tr("current")}: ${HomeScreen.mainMenu[_currentPage].title}"),
+        ),
+      );
+    }
+    final color = Theme.of(context).accentColor;
     final style = TextStyle(color: color);
 
     return PlatformScaffold(
