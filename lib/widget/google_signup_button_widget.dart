@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_app/page/NavPage.dart';
+import 'package:my_app/page/UserType.dart';
 import 'package:my_app/provider/google_sign_in.dart';
-import 'package:provider/provider.dart';
+import 'package:my_app/provider/dbdata.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GoogleSignupButtonWidget extends StatelessWidget {
   @override
@@ -18,10 +21,48 @@ class GoogleSignupButtonWidget extends StatelessWidget {
           borderSide: BorderSide(color: Colors.black),
           textColor: Colors.black,
           icon: FaIcon(FontAwesomeIcons.google, color: Colors.red),
-          onPressed: () {
-            final provider =
-                Provider.of<GoogleSignInProvider>(context, listen: false);
-            provider.login();
+          onPressed: () async {
+            await signInWithGoogle().then((result) async {
+              if (result != null) {
+                await fetchData();
+                FirebaseFirestore.instance
+                    .collection('patientinfo')
+                    .doc(result)
+                    .get()
+                    .then(
+                      (value) => value.exists == true
+                          ? Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) {
+                  return NavPage();
+                },
+              ),
+              (Route<dynamic> route) => false,
+            )
+                          : FirebaseFirestore.instance
+                              .collection('doctorinfo')
+                              .doc(result)
+                              .get()
+                              .then(
+                                (value) => value.exists == true
+                                    ? Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) {
+                  return NavPage();
+                },
+              ),
+              (Route<dynamic> route) => false,
+            )
+                                    : Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => UserType(),
+                                        ),
+                                      ),
+                              ),
+                    );
+              }
+            });
           },
         ),
       );

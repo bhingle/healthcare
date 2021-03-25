@@ -1,14 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:my_app/main.dart';
-import 'package:my_app/provider/google_sign_in.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as Path;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:my_app/page/NavPage.dart';
 
 class DoctorDetails extends StatefulWidget {

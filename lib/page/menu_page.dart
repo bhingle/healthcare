@@ -6,7 +6,9 @@ import 'package:my_app/page/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:my_app/page/sign_up_page.dart';
 import 'package:provider/provider.dart';
+import 'package:my_app/provider/google_sign_in.dart';
 
 class MenuScreen extends StatefulWidget {
   final List<MenuItem> mainMenu;
@@ -69,7 +71,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   height: 80,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image:  NetworkImage(user.photoURL),
+                      image: NetworkImage(user.photoURL),
                       fit: BoxFit.fill,
                     ),
                     color: Colors.grey[300],
@@ -132,7 +134,18 @@ class _MenuScreenState extends State<MenuScreen> {
                     ),
                   ),
                   borderSide: BorderSide(color: Colors.white, width: 2.0),
-                  onPressed: () => print("Pressed !"),
+                  onPressed: () {
+                    signOutGoogle();
+                    signOut();
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return SignUpWidget();
+                        },
+                      ),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
                   textColor: Colors.white,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0)),
