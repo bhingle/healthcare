@@ -3,6 +3,7 @@ import 'dart:math' show pi;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my_app/page/HospitalInfo.dart';
+import 'package:my_app/page/Stories.dart';
 import 'package:my_app/page/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -35,13 +36,10 @@ class PageStructure extends StatelessWidget {
         context.select<MenuProvider, int>((provider) => provider.currentPage);
     var container;
     if (_currentPage == 2) {
-      container = HospitalInfo();
-    } 
-    // else if(_currentPage == 3){
-    //   container = Medicine();
-
-    // }
-    else {
+      container = HospitalInfo();}
+    else if (_currentPage == 3){
+        container = Stories();
+    } else {
       container = Container(
         color: Colors.grey[300],
         child: Center(

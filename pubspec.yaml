@@ -56,6 +56,11 @@ dependencies:
   # icon of google
   font_awesome_flutter: ^9.0.0
 
+    #like button
+  like_button: ^2.0.2
+  # share button
+  share: ^0.6.5+4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
