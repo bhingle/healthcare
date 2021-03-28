@@ -26,7 +26,7 @@ class _DoctorDetailsState extends State<DoctorDetails> {
   uploadReport() async {
     final _firebaseStorage = FirebaseStorage.instance;
 
-    if (file != null) {
+    if (file != null) { 
       //Upload to Firebase
       var snapshot = await _firebaseStorage
           .ref()
