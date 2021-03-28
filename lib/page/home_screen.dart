@@ -11,7 +11,7 @@ class HomeScreen extends StatefulWidget {
     MenuItem(tr("Home"), Icons.home, 0),
     MenuItem(tr("Profile"), Icons.person, 1),
     MenuItem(tr("Hospitals"), Icons.local_hospital, 2),
-    MenuItem(tr("Help"), Icons.help, 3),
+    MenuItem(tr("Medicine"), Icons.help, 3),
     MenuItem(tr("About Us"), Icons.info_outline, 4),
   ];
 

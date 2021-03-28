@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:my_app/page/medicine.dart';
 import 'package:provider/provider.dart';
 
 class PageStructure extends StatelessWidget {
@@ -35,7 +36,12 @@ class PageStructure extends StatelessWidget {
     var container;
     if (_currentPage == 2) {
       container = HospitalInfo();
-    } else {
+    } 
+    // else if(_currentPage == 3){
+    //   container = Medicine();
+
+    // }
+    else {
       container = Container(
         color: Colors.grey[300],
         child: Center(
