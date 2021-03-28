@@ -38,6 +38,10 @@ dependencies:
   cloud_firestore: ^1.0.2
   firebase_core: ^1.0.2
   flutter_slider_drawer: ^2.0.0
+  flutter_chat: ^2.0.1
+  url_launcher: ^6.0.3
+  carousel_slider: ^3.0.0
+  flutter_rating_bar: ^4.0.0
 
   flutter_localizations:
     sdk: flutter
