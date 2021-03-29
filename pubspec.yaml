@@ -60,6 +60,8 @@ dependencies:
   like_button: ^2.0.2
   # share button
   share: ^0.6.5+4
+  # forgetting date from timestamp
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
