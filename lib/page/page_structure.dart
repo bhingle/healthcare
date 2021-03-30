@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:my_app/page/medicine.dart';
+import 'package:my_app/page/profile.dart';
 import 'package:provider/provider.dart';
 
 class PageStructure extends StatelessWidget {
@@ -35,7 +36,9 @@ class PageStructure extends StatelessWidget {
     final _currentPage =
         context.select<MenuProvider, int>((provider) => provider.currentPage);
     var container;
-    if (_currentPage == 2) {
+    if (_currentPage == 1) {
+      container = Profile();} 
+    else if (_currentPage == 2) {
       container = HospitalInfo();}
     else if (_currentPage == 3){
         container = Stories();

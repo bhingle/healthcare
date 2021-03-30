@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_app/page/home_screen.dart';
@@ -31,11 +32,58 @@ class _MenuScreenState extends State<MenuScreen> {
     width: 16.0,
   );
 
+String name , email ;
+bool existencePatient;
+  Future<void> fetchDataPatient() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('patientinfo')
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .get()
+          .then((value) {
+        existencePatient = value.exists;
+        if (existencePatient) {
+         name = value.data()['name'];
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+bool existenceDoctor;
+  Future<void> fetchDataDoctor() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('doctorinfo')
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .get()
+          .then((value) {
+        existenceDoctor = value.exists;
+        if (existenceDoctor) {     
+         name = value.data()['name'];
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+    fetchDataPatient();
+    fetchDataDoctor();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        // print(existence);
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    String name = user.displayName;
-    String email = user.email;
+    // String name = user.displayName;
+    email = user.email;
     final TextStyle androidStyle = const TextStyle(
         fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white);
     final TextStyle iosStyle = const TextStyle(color: Colors.white);

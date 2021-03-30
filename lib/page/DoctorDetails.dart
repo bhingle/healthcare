@@ -23,6 +23,7 @@ class _DoctorDetailsState extends State<DoctorDetails> {
   TextEditingController data2 = new TextEditingController();
   TextEditingController data3 = new TextEditingController();
   TextEditingController data4 = new TextEditingController();
+    TextEditingController data5 = new TextEditingController();
   uploadReport() async {
     final _firebaseStorage = FirebaseStorage.instance;
 
@@ -47,12 +48,6 @@ class _DoctorDetailsState extends State<DoctorDetails> {
     String name = user.displayName;
     String email = user.email;
     print("in upload data");
-    Map<String, dynamic> data = {
-      "field1": data1,
-      "field2": data2,
-      "field3": data3,
-      "field4": data4
-    };
     FirebaseFirestore.instance
         .collection("doctorinfo")
         .doc(FirebaseAuth.instance.currentUser.uid)
@@ -63,7 +58,8 @@ class _DoctorDetailsState extends State<DoctorDetails> {
       'experience': data4.text,
       'degree_url': fileUrl,
       'name':name,
-      'email':email
+      'email':email,
+      'degree':data5.text
     });
   }
 
@@ -148,6 +144,17 @@ class _DoctorDetailsState extends State<DoctorDetails> {
             // },
             validator: (value) {
               return (value.isEmpty ? "Please Enter Experience" : null);
+            },
+          ),
+          TextFormField(
+            controller: data5,
+            decoration: const InputDecoration(
+              icon: Icon(Icons.phone),
+              labelText: 'Degree *',
+            ),
+           
+            validator: (value) {
+              return (value.isEmpty ? "Please Enter Degree" : null);
             },
           ),
           Text("Upload Medical Degree Certificate", textAlign: TextAlign.end),
