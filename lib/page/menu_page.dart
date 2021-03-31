@@ -73,7 +73,7 @@ bool existenceDoctor;
     super.initState();
     fetchDataPatient();
     fetchDataDoctor();
-    Future.delayed(const Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 2000), () {
       setState(() {
         // print(existence);
       });
