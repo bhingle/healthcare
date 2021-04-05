@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:my_app/FirstPage.dart';
 import 'package:my_app/page/HospitalInfo.dart';
-import 'package:my_app/page/chat.dart';
 import 'package:my_app/page/Stories.dart';
 import 'package:my_app/page/sign_up_page.dart';
 import 'package:my_app/provider/dbdata.dart';

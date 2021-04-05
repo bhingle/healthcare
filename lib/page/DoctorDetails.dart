@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as Path;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_app/page/NavPage.dart';
+import 'package:flutter_chat/chatDB.dart';
 
 class DoctorDetails extends StatefulWidget {
   DoctorDetails({Key key}) : super(key: key);
@@ -48,24 +49,37 @@ class _DoctorDetailsState extends State<DoctorDetails> {
     }
   }
 
-  void uploadData() {
+  void uploadData() async{
     final user = FirebaseAuth.instance.currentUser;
-    String name = user.displayName;
-    String email = user.email;
-    print("in upload data");
-    FirebaseFirestore.instance
+    // print("in upload data");
+    List<String> friendList = [];
+    await FirebaseFirestore.instance
         .collection("doctorinfo")
-        .doc(FirebaseAuth.instance.currentUser.uid)
+        .doc(user.uid)
         .set({
       'speciality': data1.text,
       'hospital_name': data2.text,
       'contact': data3.text,
       'experience': data4.text,
       'degree_url': fileUrl,
-      'name': name,
-      'email': email,
-      'degree': data5.text
+      'name':user.displayName,
+      'email':user.email,
+      'degree':data5.text
     });
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user.uid)
+        .set({
+      'nickname': user.displayName,
+      'photoUrl': user.photoURL,
+      'userId': user.uid,
+      'email': user.email,
+      'friends': friendList,
+      'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
+      'chattingWith': null,
+      'online': null
+    });
+    await ChatDBFireStore.makeUserOnline(user);
   }
 
   Future<void> chooseFile() async {
@@ -255,15 +269,23 @@ class _DoctorDetailsState extends State<DoctorDetails> {
                           onPrimary: Colors.white, // foreground
                           
                         ),
-                        onPressed: () {
+                        onPressed: () async{
                           if (_formKey.currentState.validate()) {
-                            uploadReport();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => NavPage(),
-                              ),
-                            );
+                            await uploadReport();
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => NavPage(),
+                            //   ),
+                            // );
+                             Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return NavPage();
+                        },
+                      ),
+                      (Route<dynamic> route) => false,
+                    );
                           }
                         },
                         child: Text("SUBMIT",style: TextStyle(fontSize: 20),)),

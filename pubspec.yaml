@@ -46,10 +46,12 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   flutter_counter: ^1.0.3
   razorpay_flutter: ^1.2.5
-  fluttertoast: ^8.0.6
+  fluttertoast: ^7.1.8
   floating_action_bubble: ^1.1.2
   introduction_screen: ^2.1.0
   splash_screen_view: ^1.0.3
+  flutter_chat:
+    path: customPlugins/flutter_chat-2.0.1/
 
   flutter_localizations:
     sdk: flutter

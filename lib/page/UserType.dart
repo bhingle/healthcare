@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/page/DoctorDetails.dart';
-import 'package:my_app/page/DoctorDetails.dart';
 import 'package:my_app/page/PatientDetails.dart';
 
 class UserType extends StatelessWidget {

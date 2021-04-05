@@ -13,6 +13,8 @@ import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:my_app/page/medicine.dart';
 import 'package:my_app/page/profile.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_chat/screens/dashboard_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PageStructure extends StatelessWidget {
   final String title;
@@ -36,8 +38,10 @@ class PageStructure extends StatelessWidget {
     final _currentPage =
         context.select<MenuProvider, int>((provider) => provider.currentPage);
     var container;
-    if (_currentPage == 1) {
-      container = Profile();} 
+    if (_currentPage == 0) {
+      container = DashboardScreen(currentUserId: FirebaseAuth.instance.currentUser.uid);}
+    else if (_currentPage == 1) {
+      container = Profile();}  
     else if (_currentPage == 2) {
       container = HospitalInfo();}
     else if (_currentPage == 3){

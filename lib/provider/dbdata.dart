@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_chat/chatDB.dart';
 
 bool existence;
 Future<void> fetchData() async {
@@ -11,6 +12,7 @@ Future<void> fetchData() async {
         .then((value) {
       existence = value.exists;
     });
+    await ChatDBFireStore.makeUserOnline(FirebaseAuth.instance.currentUser);
   } catch (e) {
     print(e);
   }

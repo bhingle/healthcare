@@ -1,15 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:my_app/main.dart';
-import 'package:my_app/provider/google_sign_in.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as Path;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:my_app/page/NavPage.dart';
+import 'package:flutter_chat/chatDB.dart';
 
 class PatientDetails extends StatefulWidget {
   PatientDetails({Key key}) : super(key: key);
@@ -51,11 +48,9 @@ class _PatientDetailsState extends State<PatientDetails> {
     }
   }
 
-  void uploadData() {
-    print("sad"+fileUrl);
+  void uploadData() async{
     final user = FirebaseAuth.instance.currentUser;
-    String name = user.displayName;
-    String email = user.email;
+    List<String> friendList = [];
 
     print("in upload data");
     Map<String, dynamic> data = {
@@ -64,18 +59,32 @@ class _PatientDetailsState extends State<PatientDetails> {
       "field3": data3,
       "field4": data4
     };
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection("patientinfo")
-        .doc(FirebaseAuth.instance.currentUser.uid)
+        .doc(user.uid)
         .set({
       'age': data1.text,
       'address': data2.text,
       'contact': data3.text,
       'medical_history': data4.text,
       'report_url': fileUrl,
-      'name': name,
-      'email': email
+      'name': user.displayName,
+      'email': user.email
     });
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user.uid)
+        .set({
+      'nickname': user.displayName,
+      'photoUrl': user.photoURL,
+      'userId': user.uid,
+      'email': user.email,
+      'friends': friendList,
+      'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
+      'chattingWith': null,
+      'online': null
+    });
+    await ChatDBFireStore.makeUserOnline(user);
   }
 
   Future<void> chooseFile() async {
@@ -262,15 +271,17 @@ class _PatientDetailsState extends State<PatientDetails> {
                         primary: Colors.indigo, // background
                         onPrimary: Colors.white, // foreground
                       ),
-                      onPressed: () {
+                      onPressed: () async{
                         if(_formKey.currentState.validate()){
-                            uploadReport();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NavPage(),
-                          ),
-                        );
+                            await uploadReport();
+                         Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return NavPage();
+                        },
+                      ),
+                      (Route<dynamic> route) => false,
+                    );
                         }
                         
                       },
