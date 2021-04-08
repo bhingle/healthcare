@@ -364,7 +364,7 @@ class _StoriesState extends State<Stories> {
                                       // share button
                                       Padding(
                                         padding:
-                                            EdgeInsets.fromLTRB(40, 10, 30, 20),
+                                            EdgeInsets.fromLTRB(40, 10, 20, 20),
                                         child: Center(
                                           child: Column(children: [
                                             // Text(_content),

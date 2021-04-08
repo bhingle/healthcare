@@ -42,6 +42,9 @@ class PageStructure extends StatelessWidget {
       container = HospitalInfo();}
     else if (_currentPage == 3){
         container = Stories();
+    }
+    else if(_currentPage == 4){
+      container = Medicine();
     } else {
       container = Container(
         color: Colors.grey[300],

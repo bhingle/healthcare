@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
     MenuItem(tr("Profile"), Icons.person, 1),
     MenuItem(tr("Hospitals"), Icons.local_hospital, 2),
     MenuItem(tr("Blogs"), Icons.help, 3),  
-    MenuItem(tr("About Us"), Icons.info_outline, 4),
+    MenuItem(tr("Medicine Store"), Icons.info_outline, 4),
   ];
 
   @override

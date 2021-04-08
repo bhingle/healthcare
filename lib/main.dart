@@ -16,9 +16,9 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await fetchData();
-  // ErrorWidget.builder = (FlutterErrorDetails details) => Container( child : Center(
-  //                         child: Text('Loading'),
-  //                       ));
+  ErrorWidget.builder = (FlutterErrorDetails details) => Container( child : Center(
+                          child: Text('Loading'),
+                        ));
   runApp(MyApp());
 }
 
