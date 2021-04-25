@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:floating_action_bubble/floating_action_bubble.dart';
 
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
@@ -52,14 +54,26 @@ class _PaymentState extends State<Payment> {
 
     // final allData1 = querySnapshot.docs.map((doc) => doc.id);
 
-    allData.forEach((element) => FirebaseFirestore.instance
-        .collection("cart")
-        .doc(FirebaseAuth.instance.currentUser.uid)
-        .collection('pastOrder')
-        .doc(timestamp)
-        .collection('medicine')
-        .doc()
-        .set(element));
+    allData.forEach((element) {
+      
+
+      FirebaseFirestore.instance
+          .collection("cart")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection('pastOrder')
+          .doc(timestamp)
+          .collection('medicine')
+          .doc()
+          .set(element);
+
+          FirebaseFirestore.instance
+          .collection("cart")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection('pastOrder')
+          .doc(timestamp)
+          
+          .set({"totalPrice":tot,"id":timestamp});
+    });
     // setState(() {});
   }
 
@@ -77,28 +91,25 @@ class _PaymentState extends State<Payment> {
     print(allData);
 
     // final allData1 = querySnapshot.docs.map((doc) => doc.id);
-    allData.forEach((element){
-    print("==============================================================");
-    print(element['stock']);
-          
-          // 'email' : email.text,
-       });
-    
+    allData.forEach((element) {
+      print("==============================================================");
+      print(element['stock']);
+
+      // 'email' : email.text,
+    });
 
     allData.forEach((element) => FirebaseFirestore.instance
             .collection("medicine")
             .doc(element['medicineId'])
             .update({
           "stock": element['stock'] - element['quantity'],
-          
+
           // 'email' : email.text,
         }));
     // setState(() {});
   }
 
   void deleteCurrentOrder() {
-    
-
     FirebaseFirestore.instance
         .collection("cart")
         .doc(FirebaseAuth.instance.currentUser.uid)
@@ -121,11 +132,12 @@ class _PaymentState extends State<Payment> {
         .collection('pastOrder')
         .doc(timestamp)
         .collection('info')
-        .doc()
+        .doc("details")
         .set({
       'name': name.text,
-      'adddress': address.text,
+      'address': address.text,
       'number': number.text,
+      // "totalPrice" : tot
     });
   }
 
@@ -139,16 +151,11 @@ class _PaymentState extends State<Payment> {
           .then((value) {
         print(
             "##########################################################################");
-        
       });
     } catch (e) {
       print(e);
     }
   }
-
-  
-
-  
 
   Razorpay _razorpay;
 
@@ -228,8 +235,9 @@ class _PaymentState extends State<Payment> {
     _razorpay.clear();
   }
 
-  var timestamp = DateTime.now().toString();
-
+  // var timestamp = DateTime.now();
+  // DateTime timestamp = blogContent.data()['createdAt'].toDate();
+                                var timestamp = DateFormat.yMMMd().add_jm().format(DateTime.now());
   void openCheckout() async {
     // changeStock();
     // fetchDataMedicine();
@@ -255,7 +263,7 @@ class _PaymentState extends State<Payment> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    Fluttertoast.showToast(msg: "SUCCESS abhishek: " + response.paymentId);
+    Fluttertoast.showToast(msg: "SUCCESS : " + response.paymentId);
     // uploadDataInfo();
     // uploadDataMedicines();
     changeStock();

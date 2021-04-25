@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:floating_action_bubble/floating_action_bubble.dart';
+import 'package:my_app/page/Cart.dart';
+import 'package:my_app/page/PastOrdersList.dart';
+
 // import 'package:cached_network_image/cached_network_image.dart';
 
 import 'MedicineDetails.dart';
+
 String name = "";
 // void main() => runApp(MyApp());
 
@@ -30,7 +35,25 @@ class Medicine extends StatefulWidget {
   _MedicineState createState() => _MedicineState();
 }
 
-class _MedicineState extends State<Medicine> {
+class _MedicineState extends State<Medicine>
+    with SingleTickerProviderStateMixin {
+  Animation<double> _animation;
+  AnimationController _animationController;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 260),
+    );
+
+    final curvedAnimation =
+        CurvedAnimation(curve: Curves.easeInOut, parent: _animationController);
+    _animation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Trip photo widget template
@@ -74,22 +97,21 @@ class _MedicineState extends State<Medicine> {
                           child: Card(
                             child: InkWell(
                               splashColor: Colors.blue.withAlpha(30),
-                               onTap: () {
-                                    setState(() {
-                                      name =
-                                          tripPhotos[index].id;
-                                          
-                                          // DocumentSnapshot variable = FirebaseFirestore.instance.doc("$name").get();
-                                      print("name:$name");
-                                    });
+                              onTap: () {
+                                setState(() {
+                                  name = tripPhotos[index].id;
 
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => MedicineDetails(name),
-                                      ),
-                                    );
-                                  },
+                                  // DocumentSnapshot variable = FirebaseFirestore.instance.doc("$name").get();
+                                  print("name:$name");
+                                });
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MedicineDetails(name),
+                                  ),
+                                );
+                              },
                               child: Container(
                                   child: Column(
                                       mainAxisSize: MainAxisSize.min,
@@ -158,14 +180,70 @@ class _MedicineState extends State<Medicine> {
         //   // title: Text(widget.title),
         // ),
         body: GestureDetector(
-      child: SingleChildScrollView(
-        physics: ScrollPhysics(),
-        child: Column(
-          children: <Widget>[
-            tripPhotos,
-          ],
+          child: SingleChildScrollView(
+            physics: ScrollPhysics(),
+            child: Column(
+              children: <Widget>[
+                tripPhotos,
+              ],
+            ),
+          ),
         ),
-      ),
-    ));
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
+        //Init Floating Action Bubble
+        floatingActionButton: FloatingActionBubble(
+          // Menu items
+          items: <Bubble>[
+            // Floating action menu item
+            Bubble(
+              title: "Your Orders",
+              iconColor: Colors.white,
+              bubbleColor: Colors.indigo,
+              icon: Icons.people,
+              titleStyle: TextStyle(fontSize: 16, color: Colors.white),
+              onPress: () {
+                _animationController.reverse();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PastOrdersList(),
+                  ),
+                );
+              },
+            ),
+            //Floating action menu item
+            Bubble(
+              title: "Cart",
+              iconColor: Colors.white,
+              bubbleColor: Colors.indigo,
+              icon: Icons.home,
+              titleStyle: TextStyle(fontSize: 16, color: Colors.white),
+              onPress: () {
+                _animationController.reverse();
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Cart(),
+                  ),
+                );
+              },
+            ),
+          ],
+
+          // animation controller
+          animation: _animation,
+
+          // On pressed change animation state
+          onPress: _animationController.isCompleted
+              ? _animationController.reverse
+              : _animationController.forward,
+
+          // Floating Action button Icon color
+          iconColor: Colors.blue,
+
+          // Flaoting Action button Icon
+          animatedIconData: AnimatedIcons.add_event,
+        ));
   }
 }

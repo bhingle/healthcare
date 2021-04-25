@@ -8,16 +8,22 @@ import 'package:my_app/page/HospitalDetails.dart';
 import 'package:my_app/page/Payment.dart';
 
 // import 'package:flutter_counter/flutter_counter.dart';
-class Cart extends StatefulWidget {
-  Cart({Key key}) : super(key: key);
+class PastOrders extends StatefulWidget {
+
+  String id,price;
+
+  PastOrders(this.id,this.price, {Key key}) : super(key: key);
+  
+  // PastOrders({Key key}) : super(key: key);
 
   @override
-  _CartState createState() => _CartState();
+  _PastOrdersState createState() => _PastOrdersState();
 }
 
-class _CartState extends State<Cart> {
-  num _counter = 0;
-  num _defaultValue = 1;
+class _PastOrdersState extends State<PastOrders> {
+  // num _counter = 0;
+  // num _defaultValue = 1;
+  // 
   String text = '';
   String subject = '';
   List<String> imagePaths = [];
@@ -26,19 +32,8 @@ class _CartState extends State<Cart> {
   String searchString = '';
   String msg = '';
   var count = 0;
-  String lattitude, longitude, number, address, name;
-  // var totalPrice = 1;
-  // dynamic removeFromCart(currentOrdersId) {
-  //   print("current");
-  //   print(currentOrdersId);
-
-  //   FirebaseFirestore.instance
-  //       .collection("cart")
-  //       .doc(FirebaseAuth.instance.currentUser.uid)
-  //       .collection("currentOrder")
-  //       .doc(currentOrdersId)
-  //       .delete();
-  // }
+  String  mobileNo, address, name;
+ 
 
   void makePayment() {
     Navigator.push(
@@ -49,46 +44,38 @@ class _CartState extends State<Cart> {
     );
   }
 
-  // void findTotalPrice(){
-  //   setState(() {
-  //   totalPrice = totalPrice + 1;
-
-  //   });
-  // }
 
   int tot ;
   var aaa;
-  CollectionReference _collectionRef = FirebaseFirestore.instance
-      .collection('cart')
-      .doc(FirebaseAuth.instance.currentUser.uid)
-      .collection("currentOrder");
-  Future<void> findTotalPrice() async {
-    // Get docs from collection reference
-    QuerySnapshot querySnapshot = await _collectionRef.get();
+ 
+ 
 
-    // Get data from docs and convert map to List
-    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
 
-    // print(allData);
-    tot = 0;
-    allData.forEach(
-        (element) => tot = tot + element['price'] * element['quantity']);
-    print("this is "+tot.toString());
-    aaa=DateTime.now();
-    print("after calling func"+aaa.toString());
-    // setState(() {
+    Future<void> fetchInfo() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('cart')
+          .doc(FirebaseAuth.instance.currentUser.uid).collection('pastOrder').doc(widget.id).collection('info').doc("details")
+          .get()
+          .then((value) {
         
-    // });
+          name = value.data()['name'];
+          address = value.data()['address'];
+          mobileNo = value.data()['number'];
+         
+        
+      });
+    } catch (e) {
+      print(e);
+    }
   }
-
-
-  
 
   @override
   void initState() {
     super.initState();
 
-    findTotalPrice();
+    // findTotalPrice();
+    fetchInfo();
 
     Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {});
@@ -108,7 +95,7 @@ class _CartState extends State<Cart> {
                 stream: FirebaseFirestore.instance
                     .collection('cart')
                     .doc(FirebaseAuth.instance.currentUser.uid)
-                    .collection('currentOrder')
+                    .collection('pastOrder').doc(widget.id).collection('medicine')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
@@ -226,108 +213,7 @@ class _CartState extends State<Cart> {
                                                 ),
                                               ),
                                             ]),
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 10, 5, 0),
-                                          child: Column(children: [
-                                            Counter(
-                                                initialValue: currentOrdersList
-                                                    .data()['quantity'],
-                                                minValue: 1,
-                                                maxValue: currentOrdersList
-                                                    .data()['stock'],
-                                                step: 1,
-                                                decimalPlaces: 0,
-                                                onChanged: (value) {
-                                                    tot = tot + currentOrdersList
-                                                    .data()['price']*value;
-                                                     tot = tot - currentOrdersList
-                                                    .data()['price']*currentOrdersList.data()['quantity'];
-                                                    
-                                                  setState(() {
-                                                    var quantity, stock;
-                                                    FirebaseFirestore.instance
-                                                        .collection('cart')
-                                                        .doc(FirebaseAuth
-                                                            .instance
-                                                            .currentUser
-                                                            .uid)
-                                                        .collection(
-                                                            'currentOrder')
-                                                        .doc(currentOrdersList
-                                                            .id)
-                                                        .get()
-                                                        .then((value) {
-                                                      quantity = value
-                                                          .data()['quantity'];
-                                                      print(quantity);
-                                                    });
-                                                    // totalPrice = totalPrice + currentOrdersList
-                                                    // .data()['quantity']*currentOrdersList
-                                                    // .data()['price'];
-                                                    FirebaseFirestore.instance
-                                                        .collection('cart')
-                                                        .doc(FirebaseAuth
-                                                            .instance
-                                                            .currentUser
-                                                            .uid)
-                                                        .collection(
-                                                            'currentOrder')
-                                                        .doc(currentOrdersList
-                                                            .id)
-                                                        .update({
-                                                      "quantity": value,
-                                                      // 'email' : email.text,
-                                                    });
-                                                    // abhishek bhingle
-                                                    // _counter = value;
-                                                    
-                                                  //    aaa=DateTime.now();
-                                                  //       print("before calling func"+aaa.toString());
-                                                  //   findTotalPrice();
-                                                    
-                                                  // print("this is viru"+tot.toString()); 
-                                                     
-                                                  
-                                                  // Timer(Duration(seconds: 0),
-                                                  //     () {
-                                                  //       print("this is abhi");
-                                                  //       aaa=DateTime.now();
-                                                  //       print("before calling func"+aaa.toString());
-                                                  //   findTotalPrice();
-                                                    
-                                                  // print("this is viru"+tot.toString());
-                                                  // });
-                                                  // findTotalPrice();
-                                                  });
-
-                                                  // Timer.periodic(
-                                                  //     Duration(seconds: 10),
-                                                  //     (timer) {
-                                                  //   findTotalPrice();
-                                                  // });
-                                                }),
-                                            ElevatedButton(
-                                              
-                                                onPressed: () {
-                                                  setState(() {
-                                                    
-                                                  tot = tot - currentOrdersList
-                                                    .data()['price']*currentOrdersList.data()['quantity'];
-                                                  });
-                                                  print("happpy"+tot.toString());
-                                                  FirebaseFirestore.instance
-                                                      .collection("cart")
-                                                      .doc(FirebaseAuth.instance
-                                                          .currentUser.uid)
-                                                      .collection(
-                                                          "currentOrder")
-                                                      .doc(currentOrdersList.id)
-                                                      .delete();
-                                                },
-                                                child: Text("Delete"))
-                                          ]),
-                                        ),
+                                        
                                       ],
                                     ),
                                   ),
@@ -338,7 +224,12 @@ class _CartState extends State<Cart> {
                             },
                           ),
                             
-                          Text(tot.toString()),
+                          Text(widget.id),
+                          Text("₹ "+widget.price),
+                          Text(name),
+                          Text(address),
+                          Text(mobileNo),
+
                         ]),
                       );
                   }
