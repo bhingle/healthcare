@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app/page/Cart.dart';
 
@@ -14,7 +15,7 @@ final List<String> imgList = [
 
 class MedicineDetails extends StatefulWidget {
   String id;
-  
+
   MedicineDetails(this.id, {Key key}) : super(key: key);
 
   @override
@@ -22,11 +23,20 @@ class MedicineDetails extends StatefulWidget {
 }
 
 class _MedicineDetailsState extends State<MedicineDetails> {
-
-
-
-
-
+  bool isMedicinePresent ;
+  Future<void> check() async{
+  await FirebaseFirestore.instance
+          .collection('cart')
+          .doc(FirebaseAuth.instance.currentUser.uid).collection("currentOrder").doc(widget.id)
+          .get()
+          .then((value) {
+        isMedicinePresent = value.exists;
+         isAddedColor = value.exists;
+   isAddedText = value.exists;
+           
+          });
+          // return isMedicinePresent;
+  }
   int _current = 0;
   bool isAddedColor = false;
   bool isAddedText = false;
@@ -87,14 +97,38 @@ class _MedicineDetailsState extends State<MedicineDetails> {
   void initState() {
     super.initState();
     fetchData();
+    check();
     Future.delayed(const Duration(milliseconds: 500), () {
       setState(() {});
     });
   }
 
   void addToCart() {
+    print(widget.id);
     setState(() => isAddedColor = !isAddedColor);
     setState(() => isAddedText = !isAddedText);
+    if (isAddedText == true  ) {
+      FirebaseFirestore.instance
+          .collection("cart")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection("currentOrder").doc(widget.id)
+          .set({
+        'name': name,
+        'price':price,
+        'quantity':1,
+        'stock':stock,
+        'medicineId':widget.id
+      });
+
+
+    } else {
+      FirebaseFirestore.instance
+          .collection("cart")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection("currentOrder")
+          .doc(widget.id)
+          .delete();
+    }
 
     // FirebaseFirestore.instance
     //     .collection("doctorinfo")
@@ -109,91 +143,93 @@ class _MedicineDetailsState extends State<MedicineDetails> {
     //   'email':email,
     //   'degree':data5.text
     // });
-
-
   }
-  void viewCart(){
+
+  void viewCart() {
     Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Cart(),
-                                      ),
-                                    );
+      context,
+      MaterialPageRoute(
+        builder: (context) => Cart(),
+      ),
+    );
   }
+
   @override
   Widget build(BuildContext context) {
-   
-        return Scaffold(
-          body: SingleChildScrollView(
+    return Scaffold(
+      body: SingleChildScrollView(
         physics: ScrollPhysics(),
-
-                      child: Container(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
-                child: Column(children: [
-                  CarouselSlider(
-                    items: imageSliders,
-                    options: CarouselOptions(
-                        autoPlay: true,
-                        enlargeCenterPage: true,
-                        aspectRatio: 2.0,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _current = index;
-                          });
-                        }),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: imgList.map((url) {
-                      int index = imgList.indexOf(url);
-                      return Container(
-                        width: 8.0,
-                        height: 8.0,
-                        margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _current == index
-                              ? Color.fromRGBO(0, 0, 0, 0.9)
-                              : Color.fromRGBO(0, 0, 0, 0.4),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  Row(
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(8, 20, 8, 8),
+            child: Column(children: [
+              CarouselSlider(
+                items: imageSliders,
+                options: CarouselOptions(
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    aspectRatio: 2.0,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _current = index;
+                      });
+                    }),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: imgList.map((url) {
+                  int index = imgList.indexOf(url);
+                  return Container(
+                    width: 8.0,
+                    height: 8.0,
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _current == index
+                          ? Color.fromRGBO(0, 0, 0, 0.9)
+                          : Color.fromRGBO(0, 0, 0, 0.4),
+                    ),
+                  );
+                }).toList(),
+              ),
+              Row(
+                children: [
+                  Column(children: [
+                    Text("$name"),
+                    Text("₹ $price"),
+                  ]),
+                  Column(
                     children: [
-                      Column(children: [
-                        Text("$name"),
-                        Text("₹ $price"),
-                      ]),
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(120,5,5,5),
-                            child: ElevatedButton(
-                               style: ElevatedButton.styleFrom(primary: isAddedColor ? Colors.green: Colors.indigo),
-                        // color: isAddedColor ? Colors.blue: Colors.red,
-                    // textColor: Colors.white,
-                    child:  isAddedText ? Text("Remove From Cart"): Text("Add to Cart"),
-                            onPressed: addToCart, 
-                            ),
-                          )
-                      ],
-                    )
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(120, 5, 5, 5),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary:
+                                  isAddedColor? Colors.green : Colors.indigo),
+                          // color: isAddedColor ? Colors.blue: Colors.red,
+                          // textColor: Colors.white,
+                          child: isAddedText 
+                              ? Text("Remove From Cart")
+                              : Text("Add to Cart"),
+                          onPressed: addToCart,
+                        ),
+                      )
+                    ],
+                  )
                 ],
               ),
               Text("Description"),
               Text("$description")
             ]),
+          ),
         ),
       ),
-          ),
-       bottomNavigationBar: Container(
-    height: 40.0,
-    color: Colors.indigo,
-    child: ElevatedButton(onPressed: viewCart, child: Text("View Cart")),
-    
-  ),
+      bottomNavigationBar: Container(
+        height: 40.0,
+        color: Colors.indigo,
+        child: ElevatedButton(onPressed: viewCart, child: Text("View Cart")),
+      ),
     );
   }
 }

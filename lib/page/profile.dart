@@ -128,6 +128,10 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               .doc(FirebaseAuth.instance.currentUser.uid)
               .delete();
         }
+        FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser.uid)
+              .delete();
         Navigator.of(context, rootNavigator: true).pop();
         signOutGoogle();
         signOut();

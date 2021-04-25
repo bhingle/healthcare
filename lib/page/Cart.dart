@@ -1,8 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_counter/flutter_counter.dart';
+import 'package:my_app/page/HospitalDetails.dart';
+import 'package:my_app/page/Payment.dart';
+
+// import 'package:flutter_counter/flutter_counter.dart';
 class Cart extends StatefulWidget {
   Cart({Key key}) : super(key: key);
 
@@ -11,96 +16,136 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
-  // final uid = FirebaseAuth.instance.currentUser.uid;
-  String price="hii",name="hi";
-  List medicineList;
-  bool existence;
-  Future<void> fetchData() async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('cart')
-          .doc(FirebaseAuth.instance.currentUser.uid)
-          .get()
-          .then((value) {
-        existence = value.exists;
-        if (existence) {
-          // medicineList = value.data()['medicineList'];
-           print("here is the list");
-           print(value.data()['currentOrder']);
-        }
-        else{
-          print("not found");
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
+  // num _counter = 0;
+  // num _defaultValue = 1;
+  String text = '';
+  String subject = '';
+  List<String> imagePaths = [];
+  TextEditingController textEditingController = TextEditingController();
+  final database = FirebaseFirestore.instance;
+  String searchString = '';
+  String msg = '';
+  var count = 0;
+  String lattitude, longitude, number, address, name;
+  // var totalPrice = 1;
+  // dynamic removeFromCart(currentOrdersId) {
+  //   print("current");
+  //   print(currentOrdersId);
+
+  //   FirebaseFirestore.instance
+  //       .collection("cart")
+  //       .doc(FirebaseAuth.instance.currentUser.uid)
+  //       .collection("currentOrder")
+  //       .doc(currentOrdersId)
+  //       .delete();
+  // }
+
+  void makePayment() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Payment(),
+      ),
+    );
   }
 
-@override
+  // void findTotalPrice(){
+  //   setState(() {
+  //   totalPrice = totalPrice + 1;
+
+  //   });
+  // }
+
+  int tot ;
+  var aaa;
+  CollectionReference _collectionRef = FirebaseFirestore.instance
+      .collection('cart')
+      .doc(FirebaseAuth.instance.currentUser.uid)
+      .collection("currentOrder");
+  Future<void> findTotalPrice() async {
+    // Get docs from collection reference
+    QuerySnapshot querySnapshot = await _collectionRef.get();
+
+    // Get data from docs and convert map to List
+    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+
+    // print(allData);
+    tot = 0;
+    allData.forEach(
+        (element) => tot = tot + element['price'] * element['quantity']);
+    print("this is "+tot.toString());
+    aaa=DateTime.now();
+    print("after calling func"+aaa.toString());
+    // setState(() {
+        
+    // });
+  }
+
+
+  
+
+  @override
   void initState() {
     super.initState();
-    fetchData();
-    Future.delayed(const Duration(milliseconds: 500), () {
+
+    findTotalPrice();
+
+    Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // return Text("hi");
-    return  Scaffold(
-      body: GestureDetector(
-       
+    return Scaffold(
+      body: SingleChildScrollView(
+        physics: ScrollPhysics(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('cart')
+                    .doc(FirebaseAuth.instance.currentUser.uid)
+                    .collection('currentOrder')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('We got an Error ${snapshot.error}');
+                  }
 
-        child: SingleChildScrollView(
-          physics: ScrollPhysics(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                child: Container(
-                          child: ListView.builder(
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return Center(
+                        child: Text('Loading'),
+                      );
+
+                    case ConnectionState.none:
+                      return Text('oops no data');
+
+                    case ConnectionState.done:
+                      return Text('We are Done');
+
+                    default:
+                      return Container(
+                        child: Column(children: [
+                          ListView.builder(
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: medicineList.length,
+                            itemCount: snapshot.data.docs.length,
                             itemBuilder: (context, index) {
-                              
-                              // String a = medicineList.data()['hospital_name'];
-                              // a = a.toUpperCase();
+                              DocumentSnapshot currentOrdersList =
+                                  snapshot.data.docs[index];
+                              String a = currentOrdersList.data()['name'];
+                              a = a.toUpperCase();
                               // print(a);
-          //                    var medicineInfo = FirebaseFirestore.instance
-          // .collection('medicine')
-          // .doc(medicineList[index]["medicineId"]);
-          //                     // String name = dbRef.
-          //                     print("info herer");
-          //                     // print(medicineInfo.get().then((value) => print(value)));
-          //                      print(medicineInfo);
-         
-      //              FirebaseFirestore.instance
-      //     .collection('medicine')
-      //     .doc(medicineList[index]["medicineId"])
-      //     .get()
-      //     .then((value) {
-      //     print("here is the list");
-      //        price = value.data()['price'].toString();
-      //        name = value.data()['name'];
 
-      //         print(name);
-      //         print(price);
-              
-              
-              
-
-      //     // String name = value.data()['name'];
-      //     // print(name);
-        
-       
-      // });
-      
-                                return GestureDetector(
-                                  
-                                 
+                              if (a.startsWith(searchString) ||
+                                  searchString.trim() == '') {
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(5, 0, 5, 0),
                                   child: Container(
                                     height: 110,
                                     width: MediaQuery.of(context).size.width,
@@ -114,73 +159,203 @@ class _CartState extends State<Cart> {
                                     ),
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Container(
-                                          margin:
-                                              EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                          height: 80,
-                                          width: 80,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: Colors.grey[400],
-                                            ),
-                                            color: Colors.grey[200],
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15)),
-                                            image: DecorationImage(
-                                              image: NetworkImage(
-                                                  "https://mk0ehealtheletsj3t14.kinstacdn.com/wp-content/uploads/2009/07/best-hospital-in-south-india.jpg"),
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                        ),
-                                        Flexible(
-                                          child: Padding(
-                                            padding: EdgeInsets.fromLTRB(
-                                                10, 20, 0, 0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    name,
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.fade,
-                                                    softWrap: false,
-                                                    style: TextStyle(
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold),
+                                        Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.fromLTRB(
+                                                    10, 0, 0, 0),
+                                                height: 80,
+                                                width: 80,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: Colors.grey[400],
+                                                  ),
+                                                  color: Colors.grey[200],
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(15)),
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        "https://images-static.nykaa.com/media/catalog/product/f/a/fa070100.jpg"),
+                                                    fit: BoxFit.fill,
                                                   ),
                                                 ),
-                                                Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 15, 0, 30),
-                                                  child: Text(price
-                                                  ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    10, 20, 0, 0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        currentOrdersList
+                                                            .data()['name'],
+                                                        maxLines: 1,
+                                                        overflow:
+                                                            TextOverflow.fade,
+                                                        softWrap: false,
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.fromLTRB(
+                                                              0, 15, 0, 30),
+                                                      child: Text("₹" +
+                                                          (currentOrdersList
+                                                                          .data()[
+                                                                      'price'] *
+                                                                  currentOrdersList
+                                                                          .data()[
+                                                                      'quantity'])
+                                                              .toString()),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
-                                          ),
+                                              ),
+                                            ]),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 10, 5, 0),
+                                          child: Column(children: [
+                                            Counter(
+                                                initialValue: currentOrdersList
+                                                    .data()['quantity'],
+                                                minValue: 1,
+                                                maxValue: currentOrdersList
+                                                    .data()['stock'],
+                                                step: 1,
+                                                decimalPlaces: 0,
+                                                onChanged: (value) {
+                                                    tot = tot + currentOrdersList
+                                                    .data()['price']*value;
+                                                     tot = tot - currentOrdersList
+                                                    .data()['price']*currentOrdersList.data()['quantity'];
+                                                    
+                                                  setState(() {
+                                                    var quantity, stock;
+                                                    FirebaseFirestore.instance
+                                                        .collection('cart')
+                                                        .doc(FirebaseAuth
+                                                            .instance
+                                                            .currentUser
+                                                            .uid)
+                                                        .collection(
+                                                            'currentOrder')
+                                                        .doc(currentOrdersList
+                                                            .id)
+                                                        .get()
+                                                        .then((value) {
+                                                      quantity = value
+                                                          .data()['quantity'];
+                                                      print(quantity);
+                                                    });
+                                                    // totalPrice = totalPrice + currentOrdersList
+                                                    // .data()['quantity']*currentOrdersList
+                                                    // .data()['price'];
+                                                    FirebaseFirestore.instance
+                                                        .collection('cart')
+                                                        .doc(FirebaseAuth
+                                                            .instance
+                                                            .currentUser
+                                                            .uid)
+                                                        .collection(
+                                                            'currentOrder')
+                                                        .doc(currentOrdersList
+                                                            .id)
+                                                        .update({
+                                                      "quantity": value,
+                                                      // 'email' : email.text,
+                                                    });
+                                                    // abhishek bhingle
+                                                    // _counter = value;
+                                                    
+                                                  //    aaa=DateTime.now();
+                                                  //       print("before calling func"+aaa.toString());
+                                                  //   findTotalPrice();
+                                                    
+                                                  // print("this is viru"+tot.toString()); 
+                                                     
+                                                  
+                                                  // Timer(Duration(seconds: 0),
+                                                  //     () {
+                                                  //       print("this is abhi");
+                                                  //       aaa=DateTime.now();
+                                                  //       print("before calling func"+aaa.toString());
+                                                  //   findTotalPrice();
+                                                    
+                                                  // print("this is viru"+tot.toString());
+                                                  // });
+                                                  // findTotalPrice();
+                                                  });
+
+                                                  // Timer.periodic(
+                                                  //     Duration(seconds: 10),
+                                                  //     (timer) {
+                                                  //   findTotalPrice();
+                                                  // });
+                                                }),
+                                            ElevatedButton(
+                                              
+                                                onPressed: () {
+                                                  setState(() {
+                                                    
+                                                  tot = tot - currentOrdersList
+                                                    .data()['price']*currentOrdersList.data()['quantity'];
+                                                  });
+                                                  print("happpy"+tot.toString());
+                                                  FirebaseFirestore.instance
+                                                      .collection("cart")
+                                                      .doc(FirebaseAuth.instance
+                                                          .currentUser.uid)
+                                                      .collection(
+                                                          "currentOrder")
+                                                      .doc(currentOrdersList.id)
+                                                      .delete();
+                                                },
+                                                child: Text("Delete"))
+                                          ]),
                                         ),
                                       ],
                                     ),
                                   ),
                                 );
-                             
+                              } else {
+                                return Container();
+                              }
                             },
                           ),
-                        )
+                            
+                          Text(tot.toString()),
+                        ]),
+                      );
+                  }
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
+      bottomNavigationBar: Container(
+        height: 45.0,
+        color: Colors.white,
+        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          Text("₹" + tot.toString()),
+          ElevatedButton(onPressed: makePayment, child: Text("Proceed to Buy")),
+        ]),
+      ),
     );
-
   }
 }
