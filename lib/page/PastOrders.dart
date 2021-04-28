@@ -1,19 +1,21 @@
 import 'dart:async';
-
+import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_counter/flutter_counter.dart';
 import 'package:my_app/page/HospitalDetails.dart';
+import 'package:my_app/page/NavPage.dart';
 import 'package:my_app/page/Payment.dart';
 
 // import 'package:flutter_counter/flutter_counter.dart';
+var rng = new Random();
+
 class PastOrders extends StatefulWidget {
+  String id, price;
 
-  String id,price;
+  PastOrders(this.id, this.price, {Key key}) : super(key: key);
 
-  PastOrders(this.id,this.price, {Key key}) : super(key: key);
-  
   // PastOrders({Key key}) : super(key: key);
 
   @override
@@ -21,9 +23,18 @@ class PastOrders extends StatefulWidget {
 }
 
 class _PastOrdersState extends State<PastOrders> {
+  void goToMedicinePage() {
+    Navigator.pop(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NavPage(),
+      ),
+    );
+  }
+
   // num _counter = 0;
   // num _defaultValue = 1;
-  // 
+  //
   String text = '';
   String subject = '';
   List<String> imagePaths = [];
@@ -32,8 +43,7 @@ class _PastOrdersState extends State<PastOrders> {
   String searchString = '';
   String msg = '';
   var count = 0;
-  String  mobileNo, address, name;
- 
+  String mobileNo, address, name;
 
   void makePayment() {
     Navigator.push(
@@ -44,26 +54,23 @@ class _PastOrdersState extends State<PastOrders> {
     );
   }
 
-
-  int tot ;
+  int tot;
   var aaa;
- 
- 
 
-
-    Future<void> fetchInfo() async {
+  Future<void> fetchInfo() async {
     try {
       await FirebaseFirestore.instance
           .collection('cart')
-          .doc(FirebaseAuth.instance.currentUser.uid).collection('pastOrder').doc(widget.id).collection('info').doc("details")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection('pastOrder')
+          .doc(widget.id)
+          .collection('info')
+          .doc("details")
           .get()
           .then((value) {
-        
-          name = value.data()['name'];
-          address = value.data()['address'];
-          mobileNo = value.data()['number'];
-         
-        
+        name = value.data()['name'];
+        address = value.data()['address'];
+        mobileNo = value.data()['number'];
       });
     } catch (e) {
       print(e);
@@ -85,6 +92,8 @@ class _PastOrdersState extends State<PastOrders> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar:AppBar(title: Text("Order Details"
+        ),),
       body: SingleChildScrollView(
         physics: ScrollPhysics(),
         child: Column(
@@ -95,7 +104,9 @@ class _PastOrdersState extends State<PastOrders> {
                 stream: FirebaseFirestore.instance
                     .collection('cart')
                     .doc(FirebaseAuth.instance.currentUser.uid)
-                    .collection('pastOrder').doc(widget.id).collection('medicine')
+                    .collection('pastOrder')
+                    .doc(widget.id)
+                    .collection('medicine')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
@@ -117,7 +128,63 @@ class _PastOrdersState extends State<PastOrders> {
                     default:
                       return Container(
                         child: Column(children: [
+                       
+                          Padding(
+                            padding: const EdgeInsets.only(top:10),
+                            child: Container(
+
+                              width: 350,
+                              decoration: BoxDecoration(
+
+                                border: Border.all(
+                                  color: Colors.grey[400],
+                                  // width: 50,
+                                ),
+                                // color: Colors.grey[200],
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15)),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 15),
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 5),
+                                    Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                            "Order Date                     " +
+                                                widget.id)),
+                                    SizedBox(height: 5),
+                                    Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                            "Order Id                          " +
+                                                rng.nextInt(1000).toString() +
+                                                "-" +
+                                                rng
+                                                    .nextInt(1000000)
+                                                    .toString() +
+                                                "-" +
+                                                rng.nextInt(1000).toString())),
+                                    SizedBox(height: 5),
+                                    Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                            "Order total                      " +
+                                                "₹ " +
+                                                widget.price)),
+                                    SizedBox(height: 5),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 20, 0, 5),
+                            child: Align(alignment: Alignment.topLeft,child: Text("Shipments",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),)),
+                          ),
                           ListView.builder(
+                            padding: EdgeInsets.zero,
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: snapshot.data.docs.length,
@@ -166,8 +233,8 @@ class _PastOrdersState extends State<PastOrders> {
                                                       BorderRadius.all(
                                                           Radius.circular(15)),
                                                   image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        "https://images-static.nykaa.com/media/catalog/product/f/a/fa070100.jpg"),
+                                                    image: AssetImage(
+                                              "assets/images/honitus.png"),
                                                     fit: BoxFit.fill,
                                                   ),
                                                 ),
@@ -207,13 +274,12 @@ class _PastOrdersState extends State<PastOrders> {
                                                                   currentOrdersList
                                                                           .data()[
                                                                       'quantity'])
-                                                              .toString()),
+                                                              .toString(),style: TextStyle(fontWeight: FontWeight.bold),),
                                                     ),
                                                   ],
                                                 ),
                                               ),
                                             ]),
-                                        
                                       ],
                                     ),
                                   ),
@@ -223,13 +289,46 @@ class _PastOrdersState extends State<PastOrders> {
                               }
                             },
                           ),
-                            
-                          Text(widget.id),
-                          Text("₹ "+widget.price),
-                          Text(name),
-                          Text(address),
-                          Text(mobileNo),
-
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 0, 0, 5),
+                            child: Align(alignment: Alignment.topLeft,child: Text("Shipping Address",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),)),
+                          ),
+                           Container(
+                            width: 350,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.grey[400],
+                                // width: 50,
+                              ),
+                              // color: Colors.grey[200],
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 15),
+                              child: Column(
+                                children: [
+                                  SizedBox(height: 5),
+                                  Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                          name)),
+                                  Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(address
+                                          )),
+                                          Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(mobileNo
+                                          )),
+                                  SizedBox(height: 5),
+                                  
+                                ],
+                              ),
+                            ),
+                          ),
+                          
+                         
                         ]),
                       );
                   }
@@ -238,14 +337,6 @@ class _PastOrdersState extends State<PastOrders> {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: Container(
-        height: 45.0,
-        color: Colors.white,
-        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          Text("₹" + tot.toString()),
-          ElevatedButton(onPressed: makePayment, child: Text("Proceed to Buy")),
-        ]),
       ),
     );
   }

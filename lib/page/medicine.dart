@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
@@ -8,7 +9,14 @@ import 'package:my_app/page/PastOrdersList.dart';
 
 import 'MedicineDetails.dart';
 
+final List<String> imgList = [
+  'https://cms-contents.pharmeasy.in/banner/5927bf4933c-882949a523b-Softovac--category-banner.jpg',
+  'https://cms-contents.pharmeasy.in/banner/27adc200d7e-Accuchek-CB.jpg',
+  'https://cms-contents.pharmeasy.in/banner/89ab34cc536-Digital-Brufen_CB.jpg',
+];
+
 String name = "";
+int _current = 0;
 // void main() => runApp(MyApp());
 
 // class MyApp extends StatelessWidget {
@@ -36,7 +44,51 @@ class Medicine extends StatefulWidget {
 }
 
 class _MedicineState extends State<Medicine>
+
+
+
+
+
+
     with SingleTickerProviderStateMixin {
+  final List<Widget> imageSliders = imgList
+      .map((item) => Container(
+            child: Container(
+              margin: EdgeInsets.all(5.0),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  child: Stack(
+                    children: <Widget>[
+                      Image.network(
+                        item,
+                        fit: BoxFit.cover,
+                        width: 500.0,
+                        height: 175,
+                      ),
+                      Positioned(
+                        bottom: 0.0,
+                        left: 0.0,
+                        right: 0.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color.fromARGB(200, 0, 0, 0),
+                                Color.fromARGB(0, 0, 0, 0)
+                              ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 20.0),
+                        ),
+                      ),
+                    ],
+                  )),
+            ),
+          ))
+      .toList();
   Animation<double> _animation;
   AnimationController _animationController;
 
@@ -57,7 +109,7 @@ class _MedicineState extends State<Medicine>
   @override
   Widget build(BuildContext context) {
     // Trip photo widget template
-    Widget tripPhotos = new StreamBuilder<QuerySnapshot>(
+    Widget medicineList = new StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('medicine').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -76,12 +128,12 @@ class _MedicineState extends State<Medicine>
               print("Stream has started but not finished");
 
               var totalPhotosCount = 0;
-              List<DocumentSnapshot> tripPhotos;
+              List<DocumentSnapshot> medicineList;
 
               if (snapshot.hasData) {
-                tripPhotos = snapshot.data.docs;
-                // print(tripPhotos);
-                totalPhotosCount = tripPhotos.length;
+                medicineList = snapshot.data.docs;
+                // print(medicineList);
+                totalPhotosCount = medicineList.length;
 
                 if (totalPhotosCount > 0) {
                   return new GridView.builder(
@@ -99,7 +151,7 @@ class _MedicineState extends State<Medicine>
                               splashColor: Colors.blue.withAlpha(30),
                               onTap: () {
                                 setState(() {
-                                  name = tripPhotos[index].id;
+                                  name = medicineList[index].id;
 
                                   // DocumentSnapshot variable = FirebaseFirestore.instance.doc("$name").get();
                                   print("name:$name");
@@ -124,7 +176,7 @@ class _MedicineState extends State<Medicine>
                                     //         placeholder: (context, url) =>
                                     //         new CircularProgressIndicator(),
                                     //         imageUrl:
-                                    //         tripPhotos[index].data['url'],
+                                    //         medicineList[index].data['url'],
                                     //       )),
                                     // ),
 
@@ -132,16 +184,27 @@ class _MedicineState extends State<Medicine>
                                       padding: const EdgeInsets.all(8),
                                       child: Column(children: [
                                         Image(
-                                          width: 100,
-                                          height: 100,
-                                          image: NetworkImage(
-                                              "https://images-static.nykaa.com/media/catalog/product/f/a/fa070100.jpg"),
+                                          width: 150,
+                                          height: 120,
+                                          image: AssetImage(
+                                              "assets/images/honitus.png"),
                                         ),
-                                        Text(tripPhotos[index].data()['name']),
-                                        Text((tripPhotos[index].data()['price'])
-                                            .toString()),
+                                        Text(
+                                          medicineList[index].data()['name'],
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                            "₹" +
+                                                (medicineList[index]
+                                                        .data()['price'])
+                                                    .toString(),
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold))
                                       ]),
-                                      color: Colors.teal[100],
+                                      color: Colors.deepPurple[50],
                                     ),
                                   ])),
                             ),
@@ -184,7 +247,57 @@ class _MedicineState extends State<Medicine>
             physics: ScrollPhysics(),
             child: Column(
               children: <Widget>[
-                tripPhotos,
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Container(
+                    color: Colors.purple[900],
+                    height: 250,
+                    child: Column(children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top:5),
+                            child: Text(
+                              "In the Spotlight",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB( 10,0,0,5),
+                            child: Text(
+                                "Explore deals, offers, health updates and more",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15)),
+                          )),
+                      CarouselSlider(
+                        items: imageSliders,
+                        options: CarouselOptions(
+                            autoPlay: true,
+                            enlargeCenterPage: true,
+                            aspectRatio: 2.0,
+                            onPageChanged: (index, reason) {
+                              _current = index;
+                              // setState(() {
+                              // });
+                            }),
+                      ),
+                    ]),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: medicineList,
+                ),
               ],
             ),
           ),
@@ -200,7 +313,7 @@ class _MedicineState extends State<Medicine>
               title: "Your Orders",
               iconColor: Colors.white,
               bubbleColor: Colors.indigo,
-              icon: Icons.people,
+              icon: Icons.calendar_today,
               titleStyle: TextStyle(fontSize: 16, color: Colors.white),
               onPress: () {
                 _animationController.reverse();
@@ -217,11 +330,11 @@ class _MedicineState extends State<Medicine>
               title: "Cart",
               iconColor: Colors.white,
               bubbleColor: Colors.indigo,
-              icon: Icons.home,
+              icon: Icons.shopping_cart,
               titleStyle: TextStyle(fontSize: 16, color: Colors.white),
               onPress: () {
                 _animationController.reverse();
-                 Navigator.push(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => Cart(),

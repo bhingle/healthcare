@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_counter/flutter_counter.dart';
 import 'package:my_app/page/HospitalDetails.dart';
+import 'package:my_app/page/NavPage.dart';
 import 'package:my_app/page/PastOrders.dart';
 import 'package:my_app/page/Payment.dart';
+import 'package:my_app/page/medicine.dart';
+import 'package:my_app/page/page_structure.dart';
 
 // import 'package:flutter_counter/flutter_counter.dart';
 String name = "";
-
 
 class PastOrdersList extends StatefulWidget {
   PastOrdersList({Key key}) : super(key: key);
@@ -20,6 +22,15 @@ class PastOrdersList extends StatefulWidget {
 }
 
 class _PastOrdersListState extends State<PastOrdersList> {
+  void goToMedicinePage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NavPage(),
+      ),
+    );
+  }
+
   // num _counter = 0;
   // num _defaultValue = 1;
   String text = '';
@@ -96,6 +107,8 @@ class _PastOrdersListState extends State<PastOrdersList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar:AppBar(title: Text("Your Orders"
+        ),),
       body: SingleChildScrollView(
         physics: ScrollPhysics(),
         child: Column(
@@ -106,7 +119,7 @@ class _PastOrdersListState extends State<PastOrdersList> {
                 stream: FirebaseFirestore.instance
                     .collection('cart')
                     .doc(FirebaseAuth.instance.currentUser.uid)
-                    .collection('pastOrder')
+                    .collection('pastOrder').orderBy('id', descending: true)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
@@ -127,125 +140,135 @@ class _PastOrdersListState extends State<PastOrdersList> {
                       return Text('We are Done');
 
                     default:
-                      return Container(
-                        child: Column(children: [
-                          ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: snapshot.data.docs.length,
-                            itemBuilder: (context, index) {
-                              DocumentSnapshot currentList = snapshot.data.docs[index];
-                              
-                              print(snapshot.data);
-                              return GestureDetector(
+                      return Padding(
+                        padding: const EdgeInsets.only(top:10),
+                        child: Container(
+                          child: Column(children: [
+                           
+                            ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: snapshot.data.docs.length,
+                              itemBuilder: (context, index) {
+                                DocumentSnapshot currentList =
+                                    snapshot.data.docs[index];
 
-                                onTap: () {
-                                  // setState(() {
-                                  //   name = currentList.id;
-                                  //   print(
-                                  // "/////////////////////////////////////////////////////");
-                                  //   print(currentList.id);
-                                  //   print("  price form db "+currentList.data()['price'].toString());
+                                print(snapshot.data);
+                                return GestureDetector(
+                                  onTap: () {
+                                    // setState(() {
+                                    //   name = currentList.id;
+                                    //   print(
+                                    // "/////////////////////////////////////////////////////");
+                                    //   print(currentList.id);
+                                    //   print("  price form db "+currentList.data()['price'].toString());
 
+                                    //   // DocumentSnapshot variable = FirebaseFirestore.instance.doc("$name").get();
+                                    //   // print("name:$lattitude");
+                                    // });
 
-                                  //   // DocumentSnapshot variable = FirebaseFirestore.instance.doc("$name").get();
-                                  //   // print("name:$lattitude");
-                                  // });
-
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PastOrders(currentList.id,currentList.data()['totalPrice'].toString()),
-                                    ),
-                                  );
-                                },
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                  child: Container(
-                                    height: 110,
-                                    width: MediaQuery.of(context).size.width,
-                                    margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.grey[400],
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PastOrders(
+                                            currentList.id,
+                                            currentList
+                                                .data()['totalPrice']
+                                                .toString()),
                                       ),
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(15)),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.fromLTRB(
-                                                    10, 0, 0, 0),
-                                                height: 80,
-                                                width: 80,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    color: Colors.grey[400],
-                                                  ),
-                                                  color: Colors.grey[200],
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(15)),
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        "https://images-static.nykaa.com/media/catalog/product/f/a/fa070100.jpg"),
-                                                    fit: BoxFit.fill,
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                    child: Container(
+                                      height: 110,
+                                      width: MediaQuery.of(context).size.width,
+                                      margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Colors.grey[400],
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.all(Radius.circular(15)),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  margin: EdgeInsets.fromLTRB(
+                                                      10, 0, 0, 0),
+                                                  height: 80,
+                                                  width: 80,
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      color: Colors.grey[400],
+                                                    ),
+                                                    color: Colors.grey[200],
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(15)),
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                              "assets/images/honitus.png"),
+                                                      fit: BoxFit.fill,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    10, 20, 0, 0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        currentList.id,
-                                                        maxLines: 1,
-                                                        overflow:
-                                                            TextOverflow.fade,
-                                                        softWrap: false,
-                                                        style: TextStyle(
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      10, 20, 0, 0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          currentList.id,
+                                                          maxLines: 1,
+                                                          overflow:
+                                                              TextOverflow.fade,
+                                                          softWrap: false,
+                                                          style: TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
                                                       ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.fromLTRB(
-                                                              0, 15, 0, 30),
-                                                      child: Text("₹" +
-                                                          currentList
-                                                              .data()[
-                                                                  'totalPrice']
-                                                              .toString()),
-                                                    ),
-                                                  ],
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.fromLTRB(
+                                                                0, 15, 0, 30),
+                                                        child: Text("₹" +
+                                                            currentList
+                                                                .data()[
+                                                                    'totalPrice']
+                                                                .toString(),style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ]),
-                                      ],
+                                              ]),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                        ]),
+                                );
+                              },
+                            ),
+                            // ElevatedButton(
+                            //     onPressed: goToMedicinePage,
+                            //     child: Text("Go To Home"))
+                          ]),
+                        ),
                       );
                   }
                 },

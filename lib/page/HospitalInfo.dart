@@ -76,10 +76,10 @@ class _HospitalInfoState extends State<HospitalInfo> {
                 child: StreamBuilder<QuerySnapshot>(
                   stream: (searchString == null || searchString.trim() == '')
                       ? FirebaseFirestore.instance
-                          .collection('hospitals')
+                          .collection('hospitals1')
                           .snapshots()
                       : FirebaseFirestore.instance
-                          .collection('hospitals')
+                          .collection('hospitals1')
                           .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
@@ -197,7 +197,7 @@ class _HospitalInfoState extends State<HospitalInfo> {
                                                   padding: EdgeInsets.fromLTRB(
                                                       0, 15, 0, 30),
                                                   child: Text(hospitalslist
-                                                      .data()['city']),
+                                                      .data()['locality']),
                                                 ),
                                               ],
                                             ),

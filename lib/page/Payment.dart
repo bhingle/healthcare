@@ -5,6 +5,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_app/page/NavPage.dart';
+import 'package:my_app/page/PastOrders.dart';
+import 'package:my_app/page/PastOrdersList.dart';
+import 'package:my_app/page/menu_page.dart';
 
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
@@ -16,9 +20,12 @@ class Payment extends StatefulWidget {
 }
 
 class _PaymentState extends State<Payment> {
+  final _formKey = GlobalKey<FormState>();
+
   TextEditingController name = new TextEditingController();
   TextEditingController address = new TextEditingController();
   TextEditingController number = new TextEditingController();
+  final user = FirebaseAuth.instance.currentUser;
   CollectionReference _collectionRef = FirebaseFirestore.instance
       .collection('cart')
       .doc(FirebaseAuth.instance.currentUser.uid)
@@ -55,8 +62,6 @@ class _PaymentState extends State<Payment> {
     // final allData1 = querySnapshot.docs.map((doc) => doc.id);
 
     allData.forEach((element) {
-      
-
       FirebaseFirestore.instance
           .collection("cart")
           .doc(FirebaseAuth.instance.currentUser.uid)
@@ -66,13 +71,12 @@ class _PaymentState extends State<Payment> {
           .doc()
           .set(element);
 
-          FirebaseFirestore.instance
+      FirebaseFirestore.instance
           .collection("cart")
           .doc(FirebaseAuth.instance.currentUser.uid)
           .collection('pastOrder')
           .doc(timestamp)
-          
-          .set({"totalPrice":tot,"id":timestamp});
+          .set({"totalPrice": tot, "id": timestamp});
     });
     // setState(() {});
   }
@@ -163,59 +167,111 @@ class _PaymentState extends State<Payment> {
   Widget build(BuildContext context) {
     // debugShowCheckedModeBanner: false;
     return Scaffold(
-      body: Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <
-              Widget>[
-        TextFormField(
-          controller: name,
-          decoration: const InputDecoration(
-            icon: Icon(Icons.person),
-            hintText: '',
-            labelText: 'Name  *',
-          ),
-          // onSaved: (String? value) {
-          //   // This optional block of code can be used to run
-          //   // code when the user saves the form.
-          // },
-          validator: (value) {
-            return (value.isEmpty ? "Please Enter Speciality Field " : null);
-          },
-        ),
-        TextFormField(
-          minLines: 1, //Normal textInputField will be displayed
-          maxLines: 5,
-          controller: address,
-          decoration: const InputDecoration(
-            icon: Icon(Icons.person),
-            hintText: '',
-            labelText: 'Address  *',
-          ),
-          // onSaved: (String? value) {
-          //   // This optional block of code can be used to run
-          //   // code when the user saves the form.
-          // },
-          validator: (value) {
-            return (value.isEmpty ? "Please Enter Speciality Field " : null);
-          },
-        ),
-        TextFormField(
-          controller: number,
-          decoration: const InputDecoration(
-            icon: Icon(Icons.person),
-            hintText: '',
-            labelText: 'Phone Number  *',
-          ),
-          // onSaved: (String? value) {
-          //   // This optional block of code can be used to run
-          //   // code when the user saves the form.
-          // },
-          validator: (value) {
-            return (value.isEmpty ? "Please Enter Speciality Field " : null);
-          },
-        ),
-        Text("₹" + tot.toString()),
-        RaisedButton(onPressed: openCheckout, child: Text('Continue'))
-      ])),
+      appBar: AppBar(
+        title: Text("Shipment Info"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+            child: Form(
+          key: _formKey,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                TextFormField(
+                  controller: name,
+                  decoration: const InputDecoration(
+                    icon: Icon(
+                      Icons.person,
+                      color: Colors.indigo,
+                    ),
+                    hintText: '',
+                    labelText: 'Name  *',
+                  ),
+                  // onSaved: (String? value) {
+                  //   // This optional block of code can be used to run
+                  //   // code when the user saves the form.
+                  // },
+                  validator: (value) {
+                    return (value.isEmpty ? "Please Enter Name " : null);
+                  },
+                ),
+                SizedBox(
+                  height: 6,
+                ),
+                TextFormField(
+                  minLines: 1, //Normal textInputField will be displayed
+                  maxLines: 5,
+                  controller: address,
+                  decoration: const InputDecoration(
+                    icon: Icon(
+                      Icons.home,
+                      color: Colors.indigo,
+                    ),
+                    hintText: '',
+                    labelText: 'Shipping Address  *',
+                  ),
+                  // onSaved: (String? value) {
+                  //   // This optional block of code can be used to run
+                  //   // code when the user saves the form.
+                  // },
+                  validator: (value) {
+                    return (value.isEmpty ? "Please Enter Address " : null);
+                  },
+                ),
+                SizedBox(
+                  height: 6,
+                ),
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  maxLength: 10,
+                  controller: number,
+                  decoration: const InputDecoration(
+                    counterText: "",
+                    icon: Icon(
+                      Icons.phone,
+                      color: Colors.indigo,
+                    ),
+                    hintText: '',
+                    labelText: 'Phone Number  *',
+                  ),
+                  // onSaved: (String? value) {
+                  //   // This optional block of code can be used to run
+                  //   // code when the user saves the form.
+                  // },
+                  validator: (value) {
+                    return (value.isEmpty ? "Please Enter Number " : null);
+                  },
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text("Total Amount ", style: TextStyle(fontSize: 20)),
+                  Text(
+                    "₹" + tot.toString(),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )
+                ]),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints.tightFor(width: 150, height: 50),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            openCheckout();
+                          }
+                        },
+                        child: Text(
+                          'CHECKOUT',
+                          style: TextStyle(fontSize: 20),
+                        )),
+                  ),
+                )
+              ]),
+        )),
+      ),
     );
   }
 
@@ -237,7 +293,7 @@ class _PaymentState extends State<Payment> {
 
   // var timestamp = DateTime.now();
   // DateTime timestamp = blogContent.data()['createdAt'].toDate();
-                                var timestamp = DateFormat.yMMMd().add_jm().format(DateTime.now());
+  var timestamp = DateFormat.yMMMd().add_jm().format(DateTime.now());
   void openCheckout() async {
     // changeStock();
     // fetchDataMedicine();
@@ -248,8 +304,8 @@ class _PaymentState extends State<Payment> {
       'key': 'rzp_test_qvDUGFHH8QzOtY',
       'amount': tot * 100,
       'name': 'HealthCare Corp.',
-      'description': 'Fine T-Shirt',
-      'prefill': {'contact': '9865324578', 'email': 'healthcare@razorpay.com'},
+      // 'description': 'Fine T-Shirt',
+      'prefill': {'contact': '9865324578', 'email': user.email},
       'external': {
         'wallets': ['paytm']
       }
@@ -270,6 +326,12 @@ class _PaymentState extends State<Payment> {
     uploadDataInfo();
     findAllMedicine();
     deleteCurrentOrder();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NavPage(),
+      ),
+    );
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {

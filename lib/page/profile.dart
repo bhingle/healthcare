@@ -108,7 +108,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   Widget showAlertDialog(BuildContext context) {
     // set up the buttons
     Widget cancelButton = ElevatedButton(
-      child: Text("Cancel"),
+      child: Text("Cancel",style: TextStyle(fontSize: 20),),
       onPressed: () {
         Navigator.of(context, rootNavigator: true).pop();
       },
@@ -147,7 +147,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     );
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("AlertDialog"),
+      // title: Text("AlertDialog"),
       content: Text("Are you sure want to delete account ?"),
       actions: [
         cancelButton,
@@ -669,7 +669,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               primary: Colors.red[700]),
-                          child: Text("Delete Account"),
+                          child: Text("Delete Account",style: TextStyle(fontSize: 20),),
                           // textColor: Colors.white,
                           // color: Colors.red,
                           onPressed: () {
@@ -714,7 +714,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               padding: EdgeInsets.only(right: 10.0),
               child: Container(
                   child: ElevatedButton(
-                child: Text("Save"),
+                child: Text("Save",style: TextStyle(fontSize: 20),),
                 // textColor: Colors.white,
                 // color: Colors.green,
                 onPressed: () {
@@ -763,7 +763,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               padding: EdgeInsets.only(left: 10.0),
               child: Container(
                   child: ElevatedButton(
-                child: Text("Cancel"),
+                child: Text("Cancel",style: TextStyle(fontSize: 20),),
                 // textColor: Colors.white,
                 // color: Colors.red,
                 onPressed: () {

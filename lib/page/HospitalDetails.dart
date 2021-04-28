@@ -254,7 +254,7 @@ class _HospitalDetailsState extends State<HospitalDetails> {
                   // print("number $a");
                   _launched = _makePhoneCall('tel: $a');
                 }),
-                child: const Text('Make phone call'),
+                child: const Text('Make phone call',style: TextStyle(fontSize:18),),
               ),
         ]),
       ),

@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:my_app/page/Cart.dart';
 
 final List<String> imgList = [
-  'https://images.unsplash.com/photo-1538108149393-fbbd81895907?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8aG9zcGl0YWx8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&w=1000&q=80',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQViQ9yxtk_JUmyTZuQCDpqxGQT1PlEY7_2Ow&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-EBK3r8ZEa7ZT7l3cI3Ak-aDgvbBB9OU6Qg&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNHbB5ZSRtpd7l6v4CkaEbdR8d0K0eC1cfmA&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgZ7v9m64HP1ZVMmO0NcWJztE471s06N8pdA&usqp=CAU',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFxjNw8rqyRPpLU3_uTeDz5_ChbHOKWyM39g&usqp=CAU'
+  'https://res.cloudinary.com/du8msdgbj/image/upload/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/v1600089604/cropped/pn7apngctvrtweencwi1.jpg',
+  'https://res.cloudinary.com/du8msdgbj/image/upload/l_watermark_346,w_480,h_480/a_ignore,w_480,h_480,c_fit,q_auto,f_auto/v1600089615/cropped/y1jvnzpcbt82bakcfw2f.jpg',
+  'https://res.cloudinary.com/du8msdgbj/image/upload/l_watermark_346,w_690,h_700/a_ignore,w_690,h_700,c_pad,q_auto,f_auto/v1537457265/ko6rsu9xwrdb7hrmmszr.jpg',
+  'https://www.practostatic.com/practopedia-v2-images/res-750/a0d397a1196c2c92ef1ffa24db024e28b11657bc1.jpg',
+  
 ];
 
 class MedicineDetails extends StatefulWidget {
@@ -23,20 +22,22 @@ class MedicineDetails extends StatefulWidget {
 }
 
 class _MedicineDetailsState extends State<MedicineDetails> {
-  bool isMedicinePresent ;
-  Future<void> check() async{
-  await FirebaseFirestore.instance
-          .collection('cart')
-          .doc(FirebaseAuth.instance.currentUser.uid).collection("currentOrder").doc(widget.id)
-          .get()
-          .then((value) {
-        isMedicinePresent = value.exists;
-         isAddedColor = value.exists;
-   isAddedText = value.exists;
-           
-          });
-          // return isMedicinePresent;
+  bool isMedicinePresent;
+  Future<void> check() async {
+    await FirebaseFirestore.instance
+        .collection('cart')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .collection("currentOrder")
+        .doc(widget.id)
+        .get()
+        .then((value) {
+      isMedicinePresent = value.exists;
+      isAddedColor = value.exists;
+      isAddedText = value.exists;
+    });
+    // return isMedicinePresent;
   }
+
   int _current = 0;
   bool isAddedColor = false;
   bool isAddedText = false;
@@ -107,20 +108,19 @@ class _MedicineDetailsState extends State<MedicineDetails> {
     print(widget.id);
     setState(() => isAddedColor = !isAddedColor);
     setState(() => isAddedText = !isAddedText);
-    if (isAddedText == true  ) {
+    if (isAddedText == true) {
       FirebaseFirestore.instance
           .collection("cart")
           .doc(FirebaseAuth.instance.currentUser.uid)
-          .collection("currentOrder").doc(widget.id)
+          .collection("currentOrder")
+          .doc(widget.id)
           .set({
         'name': name,
-        'price':price,
-        'quantity':1,
-        'stock':stock,
-        'medicineId':widget.id
+        'price': price,
+        'quantity': 1,
+        'stock': stock,
+        'medicineId': widget.id
       });
-
-
     } else {
       FirebaseFirestore.instance
           .collection("cart")
@@ -157,6 +157,9 @@ class _MedicineDetailsState extends State<MedicineDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Medicine Detail"),
+      ),
       body: SingleChildScrollView(
         physics: ScrollPhysics(),
         child: Container(
@@ -194,33 +197,71 @@ class _MedicineDetailsState extends State<MedicineDetails> {
                 }).toList(),
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(children: [
-                    Text("$name"),
-                    Text("₹ $price"),
-                  ]),
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(120, 5, 5, 5),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary:
-                                  isAddedColor? Colors.green : Colors.indigo),
-                          // color: isAddedColor ? Colors.blue: Colors.red,
-                          // textColor: Colors.white,
-                          child: isAddedText 
-                              ? Text("Remove From Cart")
-                              : Text("Add to Cart"),
-                          onPressed: addToCart,
+                  Container(
+                      child: Row(
+                        children: [
+                          Image(
+                    width: 50,
+                    height: 50,
+                    image: AssetImage("assets/images/capsule.png"),
+                  ),Text(
+                    "$name",
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                        ],
+                      )),
+                  
+                  Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.indigo,
+                          width: 5,
                         ),
-                      )
-                    ],
-                  )
+                        // color: Colors.grey[200],
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text("₹ $price",
+                            style: TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold)),
+                      )),
                 ],
               ),
-              Text("Description"),
-              Text("$description")
+              Padding(
+                padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                child: stock >1 ? ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: isAddedColor ? Colors.green : Colors.indigo),
+                  // color: isAddedColor ? Colors.blue: Colors.red,
+                  // textColor: Colors.white,
+                  child: isAddedText
+                      ? Text("Remove From Cart")
+                      : Text("Add to Cart"),
+                  onPressed: addToCart,
+                ):Text("Out of Stock",style: TextStyle(fontSize: 15,color: Colors.red))
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Text(
+                  "Description",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                )
+              ]),
+              Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey[400],
+                      width: 5,
+                    ),
+                    // color: Colors.grey[200],
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("$description"),
+                  ))
             ]),
           ),
         ),

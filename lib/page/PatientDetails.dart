@@ -19,7 +19,7 @@ class PatientDetails extends StatefulWidget {
 }
 
 class _PatientDetailsState extends State<PatientDetails> {
-  var fileUrl;
+  var fileUrl="no file uploaded";
   File file;
   var fileNameText = "No File Choosed";
 
@@ -28,8 +28,10 @@ class _PatientDetailsState extends State<PatientDetails> {
   TextEditingController data3 = new TextEditingController();
   TextEditingController data4 = new TextEditingController();
   uploadReport() async {
+    print("sad1"+fileUrl);
     final _firebaseStorage = FirebaseStorage.instance;
 
+  
     if (file != null) {
       //Upload to Firebase
       var snapshot = await _firebaseStorage
@@ -42,11 +44,15 @@ class _PatientDetailsState extends State<PatientDetails> {
         uploadData();
       });
     } else {
+      setState(() {
+        uploadData();
+      });
       print('No Image file Received');
     }
   }
 
   void uploadData() {
+    print("sad"+fileUrl);
     final user = FirebaseAuth.instance.currentUser;
     String name = user.displayName;
     String email = user.email;
@@ -88,134 +94,193 @@ class _PatientDetailsState extends State<PatientDetails> {
   }
 
   final user = FirebaseAuth.instance.currentUser;
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Text("Enter Your Details"),
-          TextFormField(
-            controller: data1,
-            decoration: const InputDecoration(
-              icon: Icon(Icons.person),
-              // hintText: 'What do people call you?',
-              labelText: 'Age *',
-            ),
-            // onSaved: (String? value) {
-            //   // This optional block of code can be used to run
-            //   // code when the user saves the form.
-            // },
-            validator: (value) {
-              return (value.isEmpty ? "Please Enter Age" : null);
-            },
-          ),
-          TextFormField(
-            controller: data2,
-            decoration: const InputDecoration(
-              icon: Icon(Icons.home),
-              // hintText: 'What do people call you?',
-              labelText: 'Address *',
-            ),
-            // onSaved: (String? value) {
-            //   // This optional block of code can be used to run
-            //   // code when the user saves the form.
-            // },
-            validator: (value) {
-              return (value.isEmpty ? "Please Enter Address" : null);
-            },
-          ),
-          TextFormField(
-            controller: data3,
-            decoration: const InputDecoration(
-              icon: Icon(Icons.phone),
-              // hintText: 'What do people call you?',
-              labelText: 'contact *',
-            ),
-            // onSaved: (String? value) {
-            //   // This optional block of code can be used to run
-            //   // code when the user saves the form.
-            // },
-            validator: (value) {
-              return (value.isEmpty ? "Please Enter Address" : null);
-            },
-          ),
-          TextFormField(
-            controller: data4,
-            decoration: const InputDecoration(
-              icon: Icon(Icons.local_hospital),
-              // hintText: 'What do people call you?',
-              labelText: 'Medical History ',
-            ),
-            // onSaved: (String? value) {
-            //   // This optional block of code can be used to run
-            //   // code when the user saves the form.
-            // },
-            validator: (value) {},
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+      resizeToAvoidBottomInset: false,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Form(
+          key: _formKey,
+                  child: Column(
             children: [
-              GestureDetector(
-                onTap: () {
-                  chooseFile();
-                },
-                child: Card(
-                  elevation: 10,
-                  color: Colors.lightBlue[50],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Container(
-                    //padding: EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: file != null
-                              ? Container(
-                                  padding: EdgeInsets.all(10),
-                                  child: Image(
-                                    width: 100,
-                                    height: 150,
-                                    // decoration: BoxDecoration(color: Colors. red),
-                                    image:
-                                        AssetImage('assets/images/pdfFile.png'),
-                                  ),
-                                )
-                              : Container(
-                                  padding: EdgeInsets.all(10),
-                                  child: Image(
-                                    width: 100,
-                                    height: 150,
-                                    image:
-                                        AssetImage('assets/images/pdfAdd.png'),
-                                  ),
-                                ),
-                        ),
-                        Text(fileNameText),
-                      ],
-                    ),
+              Padding(
+                  padding: const EdgeInsets.only(top: 40),
+                  child: Text(
+                    "Enter Your Details",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
                 ),
+              TextFormField(
+                keyboardType: TextInputType.number,
+                maxLength: 3,
+                controller: data1,
+                decoration: const InputDecoration(
+                  counterText: "",
+                  icon: Icon(Icons.person,color: Colors.indigo),
+                  // hintText: 'What do people call you?',
+                  labelText: 'Age *',
+                ),
+                // onSaved: (String? value) {
+                //   // This optional block of code can be used to run
+                //   // code when the user saves the form.
+                // },
+                validator: (value) {
+                  return (value.isEmpty ? "Please Enter Age" : null);
+                },
               ),
+              TextFormField(
+                minLines: 1,
+                maxLines: 3,
+                controller: data2,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.home,color: Colors.indigo),
+                  // hintText: 'What do people call you?',
+                  labelText: 'Address *',
+                ),
+                // onSaved: (String? value) {
+                //   // This optional block of code can be used to run
+                //   // code when the user saves the form.
+                // },
+                validator: (value) {
+                  return (value.isEmpty ? "Please Enter Address" : null);
+                },
+  //               validator: (value) {
+  //   if (value.isEmpty) {
+  //     return 'Please enter some text';
+  //   }
+  //   return null;
+  // },
+                // validator: (text) {
+                //     if (!(text.length > 5) && text.isNotEmpty) {
+                //       return "Enter valid name of more then 5 characters!";
+                //     }
+                //     return null;
+                //   },
+              ),
+              TextFormField(
+                
+                keyboardType: TextInputType.number,
+                maxLength: 10,
+                controller: data3,
+                decoration: const InputDecoration(
+                  counterText: "",
+
+                  icon: Icon(Icons.phone,color: Colors.indigo),
+                  // hintText: 'What do people call you?',
+                  labelText: 'Contact Number *',
+                ),
+                // onSaved: (String? value) {
+                //   // This optional block of code can be used to run
+                //   // code when the user saves the form.
+                // },
+                validator: (value) {
+                  return (value.isEmpty ? "Please Enter Contact Number" : null);
+                },
+              ),
+              TextFormField(
+                minLines: 1,
+                maxLines: 5,
+                controller: data4,
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.local_hospital,color: Colors.indigo),
+                  hintText: 'Write N/A if no Medical History',
+                  labelText: 'Medical History ',
+                ),
+                // onSaved: (String? value) {
+                //   // This optional block of code can be used to run
+                //   // code when the user saves the form.
+                // },
+                // validator: (value) {
+                //   return (value.isEmpty ? "Please Enter Medical History" : null);
+                // },
+              ),
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Text(" Upload Medical Report",style: TextStyle(fontSize: 18),
+                        textAlign: TextAlign.end)
+                  ]),
+                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      chooseFile();
+                    },
+                    child: Card(
+                      elevation: 10,
+                      color: Colors.lightBlue[50],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Container(
+                        //padding: EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: file != null
+                                  ? Container(
+                                      padding: EdgeInsets.all(10),
+                                      child: Image(
+                                        width: 100,
+                                        height: 100,
+                                        // decoration: BoxDecoration(color: Colors. red),
+                                        image:
+                                            AssetImage('assets/images/pdfFile.png'),
+                                      ),
+                                    )
+                                  : Container(
+                                      padding: EdgeInsets.all(10),
+                                      child: Image(
+                                        width: 100,
+                                        height: 100,
+                                        image:
+                                            AssetImage('assets/images/pdfAdd.png'),
+                                      ),
+                                    ),
+                            ),
+                            Text(fileNameText),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                                                padding: const EdgeInsets.only(top: 20),
+
+                child: ConstrainedBox(
+                                        constraints: BoxConstraints.tightFor(width:150,height:50),
+
+                                child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.indigo, // background
+                        onPrimary: Colors.white, // foreground
+                      ),
+                      onPressed: () {
+                        if(_formKey.currentState.validate()){
+                            uploadReport();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NavPage(),
+                          ),
+                        );
+                        }
+                        
+                      },
+                                              child: Text("SUBMIT",style: TextStyle(fontSize: 20),)),
+
+                ),
+              )
             ],
           ),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.indigo, // background
-                onPrimary: Colors.white, // foreground
-              ),
-              onPressed: () {
-                uploadReport();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NavPage(),
-                  ),
-                );
-              },
-              child: Text("submit"))
-        ],
+        ),
       ),
     );
   }
