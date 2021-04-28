@@ -113,8 +113,8 @@ class _PaymentState extends State<Payment> {
     // setState(() {});
   }
 
-  void deleteCurrentOrder() {
-    FirebaseFirestore.instance
+  Future<int> deleteCurrentOrder() async{
+    await FirebaseFirestore.instance
         .collection("cart")
         .doc(FirebaseAuth.instance.currentUser.uid)
         .collection('currentOrder')
@@ -124,13 +124,13 @@ class _PaymentState extends State<Payment> {
         ds.reference.delete();
       }
     });
+    return 1;
   }
 
-  void uploadDataInfo() {
-    final user = FirebaseAuth.instance.currentUser;
+  Future<int> uploadDataInfo() async{
 
     print("in upload data");
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection("cart")
         .doc(FirebaseAuth.instance.currentUser.uid)
         .collection('pastOrder')
@@ -143,6 +143,7 @@ class _PaymentState extends State<Payment> {
       'number': number.text,
       // "totalPrice" : tot
     });
+    return 1 ;
   }
 
   Future<void> fetchDataMedicine() async {
@@ -318,20 +319,28 @@ class _PaymentState extends State<Payment> {
     }
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async{
     Fluttertoast.showToast(msg: "SUCCESS : " + response.paymentId);
     // uploadDataInfo();
     // uploadDataMedicines();
-    changeStock();
-    uploadDataInfo();
-    findAllMedicine();
-    deleteCurrentOrder();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NavPage(),
-      ),
-    );
+    await changeStock();
+    await uploadDataInfo();
+    await findAllMedicine();
+    await deleteCurrentOrder();
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => NavPage(),
+    //   ),
+    // );
+     Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return NavPage();
+                        },
+                      ),
+                      (Route<dynamic> route) => false,
+                    );
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {

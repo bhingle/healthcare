@@ -21,9 +21,14 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await fetchData();
-  ErrorWidget.builder = (FlutterErrorDetails details) => Container( child : Center(
-                          child: Text('Loading'),
-                        ));
+  ErrorWidget.builder = (FlutterErrorDetails details) => Scaffold(
+      body: Container( child : Center(
+        child:  CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(
+                          Colors.indigo),
+                    ),
+      )),
+  );
   runApp(MyApp());
 }
 

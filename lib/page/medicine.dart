@@ -279,17 +279,21 @@ class _MedicineState extends State<Medicine>
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 15)),
                           )),
-                      CarouselSlider(
-                        items: imageSliders,
-                        options: CarouselOptions(
-                            autoPlay: true,
-                            enlargeCenterPage: true,
-                            aspectRatio: 2.0,
-                            onPageChanged: (index, reason) {
-                              _current = index;
-                              // setState(() {
-                              // });
-                            }),
+                      Container(
+                // height: MediaQuery.of(context).size.height*.2,
+
+                        child: CarouselSlider(
+                          items: imageSliders,
+                          options: CarouselOptions(
+                              autoPlay: true,
+                              enlargeCenterPage: true,
+                              aspectRatio: 2.0,
+                              onPageChanged: (index, reason) {
+                                _current = index;
+                                // setState(() {
+                                // });
+                              }),
+                        ),
                       ),
                     ]),
                   ),

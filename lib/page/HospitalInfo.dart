@@ -89,7 +89,10 @@ class _HospitalInfoState extends State<HospitalInfo> {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
                         return Center(
-                          child: Text('Loading'),
+                          child: CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(
+                          Colors.indigo),
+                    ),
                         );
 
                       case ConnectionState.none:

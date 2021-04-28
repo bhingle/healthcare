@@ -39,7 +39,7 @@ class PageStructure extends StatelessWidget {
         context.select<MenuProvider, int>((provider) => provider.currentPage);
     var container;
     if (_currentPage == 0) {
-      container = DashboardScreen(currentUserId: FirebaseAuth.instance.currentUser.uid);}
+      container = Medicine();}
     else if (_currentPage == 1) {
       container = Profile();}  
     else if (_currentPage == 2) {
@@ -48,7 +48,8 @@ class PageStructure extends StatelessWidget {
         container = Stories();
     }
     else if(_currentPage == 4){
-      container = Medicine();
+      
+      container = DashboardScreen(currentUserId: FirebaseAuth.instance.currentUser.uid);
     } else {
       container = Container(
         color: Colors.grey[300],
