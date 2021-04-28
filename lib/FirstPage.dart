@@ -87,70 +87,23 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         ),
       ),
       pages: [
-        PageViewModel(
-          title: "Keeping You Well",
-          body:
-              "",
-          image: _buildImage('healthCareLogo.png'),
-          decoration: pageDecoration,
-        ),
+        // PageViewModel(
+        //   title: "Keeping You Well",
+        //   body:
+        //       "",
+        //   image: _buildImage('healthCareLogo.png'),
+        //   decoration: pageDecoration,
+        // ),
         PageViewModel(
           title: "Interractive UI",
           body:
-              "Helps to navigate to the hospitals seamlessly / Chat with Doctor ",
+              "Instantly locate hospitals and order medicines",
           image: _buildImage('img2.jpg'),
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Blog",
-          body:
-              "Know thoughts of the Experts",
-          image: _buildImage('img3.jpg'),
-          decoration: pageDecoration,
-        ),
-        PageViewModel(
-          title: "",
-          body:
-              "Pages can be full screen as well.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc id euismod lectus, non tempor felis. Nam rutrum rhoncus est ac venenatis.",
-          image: _buildFullscrenImage(),
-          decoration: pageDecoration.copyWith(
-            contentMargin: const EdgeInsets.symmetric(horizontal: 16),
-            fullScreen: true,
-            bodyFlex: 2,
-            imageFlex: 3,
-          ),
-        ),
-        PageViewModel(
-          title: "Another title page",
-          body: "Another beautiful body text for this example onboarding",
-          image: _buildImage('img2.jpg'),
-          footer: ElevatedButton(
-            onPressed: () {
-              introKey.currentState?.animateScroll(0);
-            },
-            child: const Text(
-              'FooButton',
-              style: TextStyle(color: Colors.white),
-            ),
-            style: ElevatedButton.styleFrom(
-              primary: Colors.purple,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-          ),
-          decoration: pageDecoration,
-        ),
-        PageViewModel(
-          title: "Title of last page - reversed",
-          bodyWidget: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text("Click on ", style: bodyStyle),
-              Icon(Icons.edit),
-              Text(" to edit a post", style: bodyStyle),
-            ],
-          ),
+          title: "Stay Connected and Updated",
+          body: "Connect with the doctors easily to track your health updates",
           decoration: pageDecoration.copyWith(
             bodyFlex: 2,
             imageFlex: 4,
@@ -160,6 +113,47 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           image: _buildImage('img1.jpg'),
           reverse: true,
         ),
+        PageViewModel(
+          title: "Know the thoughts of the Experts",
+          body:
+              "Be updated with the Blog system from the world's top doctors",
+          image: _buildImage('img3.jpg'),
+          decoration: pageDecoration,
+        ),
+        // PageViewModel(
+        //   title: "",
+        //   body:
+        //       "Pages can be full screen as well.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc id euismod lectus, non tempor felis. Nam rutrum rhoncus est ac venenatis.",
+        //   image: _buildFullscrenImage(),
+        //   decoration: pageDecoration.copyWith(
+        //     contentMargin: const EdgeInsets.symmetric(horizontal: 16),
+        //     fullScreen: true,
+        //     bodyFlex: 2,
+        //     imageFlex: 3,
+        //   ),
+        // ),
+        // PageViewModel(
+        //   title: "Another title page",
+        //   body: "Another beautiful body text for this example onboarding",
+        //   image: _buildImage('img2.jpg'),
+        //   footer: ElevatedButton(
+        //     onPressed: () {
+        //       introKey.currentState?.animateScroll(0);
+        //     },
+        //     child: const Text(
+        //       'FooButton',
+        //       style: TextStyle(color: Colors.white),
+        //     ),
+        //     style: ElevatedButton.styleFrom(
+        //       primary: Colors.purple,
+        //       shape: RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.circular(8.0),
+        //       ),
+        //     ),
+        //   ),
+        //   decoration: pageDecoration,
+        // ),
+        
       ],
       onDone: () => _onIntroEnd(context),
       //onSkip: () => _onIntroEnd(context), // You can override onSkip callback

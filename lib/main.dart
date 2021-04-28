@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
           // : SignUpWidget(),
           :App(),
       duration: 3000,
-      imageSize: 100,
+      imageSize: 300,
       imageSrc: "assets/images/healthCareLogo.png",
       text: "Keeping You Well",
       textType: TextType.TyperAnimatedText,
