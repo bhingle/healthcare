@@ -280,7 +280,7 @@ class _MedicineState extends State<Medicine>
                                     color: Colors.white, fontSize: 15)),
                           )),
                       Container(
-                // height: MediaQuery.of(context).size.height*.2,
+                height: MediaQuery.of(context).size.height*.2,
 
                         child: CarouselSlider(
                           items: imageSliders,

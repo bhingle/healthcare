@@ -230,20 +230,17 @@ class _PastOrdersListState extends State<PastOrdersList> {
                                                         MainAxisAlignment.start,
                                                     children: [
                                                       Expanded(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.only(bottom:2),
-                                                          child: Text(
-                                                            currentList.id,
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow.fade,
-                                                            softWrap: false,
-                                                            style: TextStyle(
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                          ),
+                                                        child: Text(
+                                                          currentList.id,
+                                                          maxLines: 1,
+                                                          overflow:
+                                                              TextOverflow.fade,
+                                                          softWrap: false,
+                                                          style: TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
                                                         ),
                                                       ),
                                                       Padding(
