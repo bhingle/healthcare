@@ -4,3 +4,5 @@
 - There is blogging platform for doctors to give information about health.
 - There is a medical store module which helps users to purchase medicines (Payment portal also implemented using RazorPay).
 - Implemented chat module which helps doctors and patients to communicate with each other by using text as well as images.
+
+[![HealthCare](https://img.youtube.com/vi/rU1eZh88gUs/0.jpg)](https://www.youtube.com/watch?v=rU1eZh88gUs)
